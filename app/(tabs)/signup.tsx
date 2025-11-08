@@ -85,14 +85,15 @@ export default function Signup() {
         createdAt: new Date().toISOString(),
       });
 
-      Alert.alert("Success", "Account created successfully!");
-      console.log("User created:", userCredential.user.uid);
-      console.log("Navigating to home...");
       setEmail("");
       setPassword("");
       setRetype("");
       setLoading(false);
-      router.replace("/home");
+      Alert.alert(
+      "Success",
+      "Account created successfully!",
+      [{ text: "OK", onPress: () => router.replace("/home") }]
+    );
       
     } catch (error: any) {
       setLoading(false);
