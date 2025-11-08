@@ -21,7 +21,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// ✅ Auth with persistence for Expo
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
 });

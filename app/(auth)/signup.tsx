@@ -1,33 +1,33 @@
-import { useState } from "react";
 import {
-  StyleSheet,
-  Text,
-  StatusBar,
-  Pressable,
-  ViewStyle,
-  StyleProp,
-  TextInput,
-  KeyboardAvoidingView,
-  ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Platform,
-  Alert,
-} from "react-native";
-import { MotiView } from "moti";
-import { Image } from "expo-image";
-import { Easing } from "react-native-reanimated";
-import { Link,useRouter } from "expo-router";
-import {
-  useFonts,
   Poppins_400Regular,
   Poppins_500Medium,
   Poppins_700Bold,
+  useFonts,
 } from "@expo-google-fonts/poppins";
+import { Image } from "expo-image";
+import { Link, useRouter } from "expo-router";
+import { MotiView } from "moti";
+import { useState } from "react";
+import {
+  Alert,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
+  ViewStyle,
+} from "react-native";
+import { Easing } from "react-native-reanimated";
 
-import { auth, db } from "./firebase/config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../../firebase/config";
 
 const ButtonClickAnimation = ({
   pressed,
