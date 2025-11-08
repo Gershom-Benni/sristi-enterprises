@@ -105,7 +105,7 @@ export default function WelcomePage() {
         >
           <Text style={styles.signupbtnText}>Sign Up</Text>
         </Pressable>
-        <Pressable style={LoginButtonClickAnimation}>
+        <Pressable style={LoginButtonClickAnimation} onPress={() => router.push("/login")}>
           <Text style={styles.signupbtnText}>Login</Text>
         </Pressable>
         <Text style={styles.terms}>

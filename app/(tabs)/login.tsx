@@ -45,7 +45,7 @@ const ButtonClickAnimation = ({
   return [baseStyles, dynamicStyles];
 };
 
-export default function Signup() {
+export default function Login() {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
@@ -91,28 +91,28 @@ export default function Signup() {
             }}
             style={styles.formContainer}
           >
-            <Text style={styles.signupTxt}>Sign Up</Text>
+            <Text style={styles.loginTxt}>Login</Text>
 
-            <TextInput placeholder="Email" style={styles.input} keyboardType="email-address" />
+            <TextInput
+              placeholder="Email"
+              style={styles.input}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
             <TextInput
               placeholder="Password"
               style={styles.input}
               secureTextEntry
             />
-            <TextInput
-              placeholder="Retype Password"
-              style={styles.input}
-              secureTextEntry
-            />
 
             <Pressable style={ButtonClickAnimation}>
-              <Text style={styles.signupbtnText}>Sign Up</Text>
+              <Text style={styles.loginBtnText}>Login</Text>
             </Pressable>
 
             <Text style={{ fontSize: 16, color: "#333", marginTop: 20 }}>
-              Already a user?{" "}
-              <Link href="/login" style={{ color: "#eec33d", fontWeight: "bold" }}>
-                Login
+              New user?{" "}
+              <Link href="/signup" style={{ color: "#eec33d", fontWeight: "bold" }}>
+                Sign Up
               </Link>
             </Text>
           </MotiView>
@@ -135,12 +135,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 16,
   },
-  signupbtnText: {
+  loginBtnText: {
     fontFamily: "Poppins_700Bold",
     fontSize: 15,
     color: "#333333",
   },
-  signupTxt: {
+  loginTxt: {
     fontFamily: "Poppins_700Bold",
     color: "#333333",
     fontSize: 25,
@@ -159,9 +159,7 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 20,
   },
-  logoContainer: {
-    
-  },
+  logoContainer: {},
   formContainer: {
     alignItems: "center",
   },
