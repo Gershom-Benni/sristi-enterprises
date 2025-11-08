@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   useFonts,
   Poppins_400Regular,
@@ -7,7 +8,6 @@ import {
 import {
   StyleSheet,
   Text,
-  View,
   StatusBar,
   Pressable,
   ViewStyle,
@@ -18,11 +18,14 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  Alert,
 } from "react-native";
 import { MotiView } from "moti";
 import { Image } from "expo-image";
 import { Easing } from "react-native-reanimated";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebase/config";
 
 const ButtonClickAnimation = ({
   pressed,
@@ -46,12 +49,30 @@ const ButtonClickAnimation = ({
 };
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_700Bold,
   });
   if (!fontsLoaded) return null;
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      Alert.alert("Success", "Logged in successfully!");
+      router.push("/home");
+    } catch (error: any) {
+      Alert.alert("Login Failed", error.message);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -98,14 +119,18 @@ export default function Login() {
               style={styles.input}
               keyboardType="email-address"
               autoCapitalize="none"
+              value={email}
+              onChangeText={setEmail}
             />
             <TextInput
               placeholder="Password"
               style={styles.input}
               secureTextEntry
+              value={password}
+              onChangeText={setPassword}
             />
 
-            <Pressable style={ButtonClickAnimation}>
+            <Pressable onPress={handleLogin} style={ButtonClickAnimation}>
               <Text style={styles.loginBtnText}>Login</Text>
             </Pressable>
 

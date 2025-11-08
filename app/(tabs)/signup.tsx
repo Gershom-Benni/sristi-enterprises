@@ -1,13 +1,7 @@
-import {
-  useFonts,
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-} from "@expo-google-fonts/poppins";
+import { useState } from "react";
 import {
   StyleSheet,
   Text,
-  View,
   StatusBar,
   Pressable,
   ViewStyle,
@@ -18,11 +12,22 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  Alert,
 } from "react-native";
 import { MotiView } from "moti";
 import { Image } from "expo-image";
 import { Easing } from "react-native-reanimated";
-import { Link } from "expo-router";
+import { Link,useRouter } from "expo-router";
+import {
+  useFonts,
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_700Bold,
+} from "@expo-google-fonts/poppins";
+
+import { auth, db } from "./firebase/config";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 const ButtonClickAnimation = ({
   pressed,
@@ -38,7 +43,7 @@ const ButtonClickAnimation = ({
   };
 
   const dynamicStyles: ViewStyle = {
-    backgroundColor: pressed ? "#e4b93aff" : "#eec33d",
+    backgroundColor: pressed ? "#e4b93a" : "#eec33d",
     transform: [{ scale: pressed ? 0.99 : 1 }],
   };
 
@@ -51,7 +56,49 @@ export default function Signup() {
     Poppins_500Medium,
     Poppins_700Bold,
   });
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [retype, setRetype] = useState("");
+  const [loading, setLoading] = useState(false);
+
   if (!fontsLoaded) return null;
+  const handleSignup = async () => {
+    if (!email || !password || !retype) {
+      Alert.alert("Error", "Please fill all fields.");
+      return;
+    }
+    if (password !== retype) {
+      Alert.alert("Error", "Passwords do not match.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        email: email,
+        createdAt: new Date().toISOString(),
+      });
+
+      Alert.alert("Success", "Account created successfully!");
+      console.log("User created:", userCredential.user.uid);
+      console.log("Navigating to home...");
+      setEmail("");
+      setPassword("");
+      setRetype("");
+      setLoading(false);
+      router.replace("/home");
+      
+    } catch (error: any) {
+      setLoading(false);
+      Alert.alert("Signup failed", error.message);
+    } 
+  };
 
   return (
     <KeyboardAvoidingView
@@ -93,20 +140,33 @@ export default function Signup() {
           >
             <Text style={styles.signupTxt}>Sign Up</Text>
 
-            <TextInput placeholder="Email" style={styles.input} keyboardType="email-address" />
+            <TextInput
+              placeholder="Email"
+              style={styles.input}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              value={email}
+              onChangeText={setEmail}
+            />
             <TextInput
               placeholder="Password"
               style={styles.input}
               secureTextEntry
+              value={password}
+              onChangeText={setPassword}
             />
             <TextInput
               placeholder="Retype Password"
               style={styles.input}
               secureTextEntry
+              value={retype}
+              onChangeText={setRetype}
             />
 
-            <Pressable style={ButtonClickAnimation}>
-              <Text style={styles.signupbtnText}>Sign Up</Text>
+            <Pressable style={ButtonClickAnimation} onPress={handleSignup}>
+              <Text style={styles.signupbtnText}>
+                {loading ? "Creating..." : "Sign Up"}
+              </Text>
             </Pressable>
 
             <Text style={{ fontSize: 16, color: "#333", marginTop: 20 }}>
@@ -159,9 +219,7 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 20,
   },
-  logoContainer: {
-    
-  },
+  logoContainer: {},
   formContainer: {
     alignItems: "center",
   },
