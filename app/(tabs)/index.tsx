@@ -1,12 +1,17 @@
-import React, { useRef, useEffect, useState } from "react";
-import { View, Text, FlatList, Image, Pressable, Dimensions, StyleSheet, ScrollView,Platform,StatusBar } from "react-native";
-import { useRouter } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-  useFonts,
-} from "@expo-google-fonts/poppins";
+  View,
+  Text,
+  FlatList,
+  Image,
+  Pressable,
+  Dimensions,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useProductStore } from "../../store/useProductStore";
 
 const { width } = Dimensions.get("window");
 
@@ -16,25 +21,17 @@ const posters = [
   { id: "3", image: "https://picsum.photos/800/300?random=3" },
 ];
 
-const products = [
-  { id: "1", name: "Product A", price: "₹499", image: "https://picsum.photos/800/300?random=1" },
-  { id: "2", name: "Product B", price: "₹699", image: "https://picsum.photos/800/300?random=2" },
-  { id: "3", name: "Product C", price: "₹799", image: "https://picsum.photos/800/300?random=3" },
-  { id: "4", name: "Product D", price: "₹999", image: "https://picsum.photos/800/300?random=5" },
-  { id: "5", name: "Product E", price: "₹1199", image: "https://picsum.photos/800/300?random=6" },
-  { id: "6", name: "Product F", price: "₹1299", image: "https://picsum.photos/800/300?random=7" },
-];
-
 export default function HomePage() {
-    const [fontsLoaded] = useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_700Bold,
-  });
   const router = useRouter();
+  const { fetchProducts, products } = useProductStore();
   const [index, setIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
-  
+
+  useEffect(() => {
+    fetchProducts(); // loads mock data once
+  }, []);
+
+  const allProducts = products;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -61,18 +58,21 @@ export default function HomePage() {
         />
       </View>
 
-      <Text style={styles.sectionTitle}>Our Products</Text>
+      <Text style={styles.sectionTitle}>Products</Text>
 
       <View style={styles.gridContainer}>
-        {products.map((item) => (
+        {allProducts.map((item) => (
           <Pressable
             key={item.id}
             style={styles.card}
-            // onPress={() => router.push(`/product/${item.id}`)}
             onPress={() => router.push(`/product`)}
           >
             <Image source={{ uri: item.image }} style={styles.productImage} />
             <Text style={styles.productName}>{item.name}</Text>
+            <View style={styles.ratingRow}>
+              <Ionicons name="star" size={14} color="#FFD700" />
+              <Text style={styles.ratingText}>{item.rating.toFixed(1)}</Text>
+            </View>
             <Text style={styles.productPrice}>{item.price}</Text>
           </Pressable>
         ))}
@@ -82,28 +82,15 @@ export default function HomePage() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#f8ffe6",
-    flex: 1,
-    paddingTop:7,
-  },
-  carouselContainer: {
-    width: "100%",
-    height: 200,
-  },
-  carouselImage: {
-    width: width,
-    height: 200,
-    resizeMode: "cover",
-  },
+  container: { backgroundColor: "#f8ffe6ff", flex: 1 },
+  carouselContainer: { width: "100%", height: 200 },
+  carouselImage: { width: width, height: 200, resizeMode: "cover" },
   sectionTitle: {
-    fontFamily: 'Poppins_700Bold',
-    fontSize: 25,
+    fontSize: 18,
     fontWeight: "600",
     paddingHorizontal: 16,
     marginVertical: 12,
     color: "#333",
-    textAlign:'center'
   },
   gridContainer: {
     flexDirection: "row",
@@ -118,6 +105,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     alignItems: "center",
     padding: 10,
+    borderWidth:1,
+    borderColor:'#d8ff75ff'
   },
   productImage: {
     width: "100%",
@@ -125,18 +114,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     resizeMode: "cover",
   },
-  productName: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#333",
-    marginTop: 6,
-    fontFamily:'Poppins_500Medium',
-  },
+  productName: { fontSize: 14, fontWeight: "500", color: "#333", marginTop: 6 },
   productPrice: {
     fontSize: 14,
     fontWeight: "bold",
     color: "#4CAF50",
     marginTop: 2,
-    fontFamily:'Poppins_500Medium',
   },
+  ratingRow: { flexDirection: "row", alignItems: "center", marginTop: 4 },
+  ratingText: { fontSize: 12, color: "#555", marginLeft: 4 },
 });

@@ -1,10 +1,20 @@
 import { Stack, useRouter, usePathname } from "expo-router";
-import { View, Text, Pressable, StyleSheet, TextInput } from "react-native";
+import { View, Text, Pressable, StyleSheet, TextInput, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useProductStore } from "../../store/useProductStore";
+import { useEffect, useState } from "react";
 
 export default function TabsLayout() {
   const router = useRouter();
   const pathname = usePathname();
+  const { searchQuery, setSearchQuery, filteredProducts, fetchProducts } = useProductStore();
+  const [isFocused, setIsFocused] = useState(false);
+  
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const suggestions = searchQuery.trim() && isFocused ? filteredProducts().slice(0, 5) : [];
 
   const isPathActive = (tabPath: string) => {
     if (tabPath === "/(tabs)") {
@@ -16,12 +26,12 @@ export default function TabsLayout() {
     }
 
     const fullMatch = pathname === tabPath;
-
     const segmentPath = tabPath.replace("/(tabs)", "");
     const segmentMatch = pathname === segmentPath;
 
     return fullMatch || segmentMatch;
   };
+
   const activeColor = "#4CAF50";
   const inactiveColor = "#333";
 
@@ -31,11 +41,47 @@ export default function TabsLayout() {
         <Pressable onPress={() => router.push("/(tabs)")}>
           <Ionicons name="home-outline" size={24} color={inactiveColor} />
         </Pressable>
-        <TextInput
-          placeholder="Search..."
-          placeholderTextColor="#888"
-          style={styles.searchBar}
-        />
+        
+        <View style={styles.searchContainer}>
+          <TextInput
+            placeholder="Search..."
+            placeholderTextColor="#888"
+            style={styles.searchBar}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            onSubmitEditing={() => {
+              setIsFocused(false);
+              router.push("/(tabs)/searchResults");
+            }}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+          />
+
+          {suggestions.length > 0 && (
+            <View style={styles.suggestionBox}>
+              <FlatList
+                data={suggestions}
+                keyExtractor={(item) => item.id}
+                nestedScrollEnabled={true}
+                keyboardShouldPersistTaps="handled"
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => {
+                      setSearchQuery(item.name);
+                      setIsFocused(false);
+                      router.push("/(tabs)/searchResults");
+                    }}
+                    style={styles.suggestionItem}
+                  >
+                    <Text style={styles.suggestionText}>{item.name}</Text>
+                    <Text style={styles.suggestionPrice}>{item.price}</Text>
+                  </Pressable>
+                )}
+              />
+            </View>
+          )}
+        </View>
+
         <Pressable onPress={() => router.push("/(tabs)/account")}>
           <Ionicons
             name="person-circle-outline"
@@ -105,6 +151,7 @@ export default function TabsLayout() {
             Orders
           </Text>
         </Pressable>
+
         <Pressable
           onPress={() => router.push("/(tabs)/wishlist")}
           style={styles.tab}
@@ -154,7 +201,10 @@ export default function TabsLayout() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: { 
+    flex: 1, 
+    backgroundColor: "#fff" 
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -165,16 +215,58 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8ffe6",
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
+    zIndex: 1000,
   },
-  searchBar: {
+  searchContainer: {
     flex: 1,
     marginHorizontal: 10,
+    position: "relative",
+  },
+  searchBar: {
     backgroundColor: "#f0f0f0",
     borderRadius: 20,
     paddingHorizontal: 12,
     height: 36,
+    width: "100%",
   },
-  content: { flex: 1 },
+  suggestionBox: {
+    position: "absolute",
+    top: 42,
+    left: 0,
+    right: 0,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    maxHeight: 200,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  suggestionItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  suggestionText: {
+    color: "#333",
+    fontSize: 14,
+    flex: 1,
+  },
+  suggestionPrice: {
+    color: "#4CAF50",
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  content: { 
+    flex: 1 
+  },
   footer: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -183,10 +275,21 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#ddd",
     paddingVertical: 10,
-    paddingBottom:20
+    paddingBottom: 20,
   },
-  tab: { alignItems: "center" },
-  activeTab: { opacity: 0.8 },
-  tabText: { fontSize: 12, color: "#333", marginTop: 3 },
-  activeTabText: { color: "#4CAF50", fontWeight: "600" },
+  tab: { 
+    alignItems: "center" 
+  },
+  activeTab: { 
+    opacity: 0.8 
+  },
+  tabText: { 
+    fontSize: 12, 
+    color: "#333", 
+    marginTop: 3 
+  },
+  activeTabText: { 
+    color: "#4CAF50", 
+    fontWeight: "600" 
+  },
 });
