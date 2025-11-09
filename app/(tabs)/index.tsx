@@ -1,6 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
-import { View, Text, FlatList, Image, Pressable, Dimensions, StyleSheet, ScrollView } from "react-native";
+import { View, Text, FlatList, Image, Pressable, Dimensions, StyleSheet, ScrollView,Platform,StatusBar } from "react-native";
 import { useRouter } from "expo-router";
+import {
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_700Bold,
+  useFonts,
+} from "@expo-google-fonts/poppins";
 
 const { width } = Dimensions.get("window");
 
@@ -20,9 +26,15 @@ const products = [
 ];
 
 export default function HomePage() {
+    const [fontsLoaded] = useFonts({
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_700Bold,
+  });
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
+  
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -49,7 +61,7 @@ export default function HomePage() {
         />
       </View>
 
-      <Text style={styles.sectionTitle}>Products</Text>
+      <Text style={styles.sectionTitle}>Our Products</Text>
 
       <View style={styles.gridContainer}>
         {products.map((item) => (
@@ -73,6 +85,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#f8ffe6",
     flex: 1,
+    paddingTop:7,
   },
   carouselContainer: {
     width: "100%",
@@ -84,11 +97,13 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   sectionTitle: {
-    fontSize: 18,
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 25,
     fontWeight: "600",
     paddingHorizontal: 16,
     marginVertical: 12,
     color: "#333",
+    textAlign:'center'
   },
   gridContainer: {
     flexDirection: "row",
@@ -115,11 +130,13 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#333",
     marginTop: 6,
+    fontFamily:'Poppins_500Medium',
   },
   productPrice: {
     fontSize: 14,
     fontWeight: "bold",
     color: "#4CAF50",
     marginTop: 2,
+    fontFamily:'Poppins_500Medium',
   },
 });
