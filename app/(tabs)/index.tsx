@@ -1,5 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_700Bold,
+  useFonts,
+} from "@expo-google-fonts/poppins";
+import {
   View,
   Text,
   FlatList,
@@ -26,9 +32,13 @@ export default function HomePage() {
   const { fetchProducts, products } = useProductStore();
   const [index, setIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
-
+  useFonts({
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_700Bold,
+  });
   useEffect(() => {
-    fetchProducts(); // loads mock data once
+    fetchProducts();
   }, []);
 
   const allProducts = products;
@@ -43,7 +53,7 @@ export default function HomePage() {
   }, [index]);
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.carouselContainer}>
         <FlatList
           ref={flatListRef}
@@ -58,7 +68,7 @@ export default function HomePage() {
         />
       </View>
 
-      <Text style={styles.sectionTitle}>Products</Text>
+      <Text style={styles.sectionTitle}>Our Products</Text>
 
       <View style={styles.gridContainer}>
         {allProducts.map((item) => (
@@ -69,9 +79,16 @@ export default function HomePage() {
           >
             <Image source={{ uri: item.image }} style={styles.productImage} />
             <Text style={styles.productName}>{item.name}</Text>
-            <View style={styles.ratingRow}>
-              <Ionicons name="star" size={14} color="#FFD700" />
-              <Text style={styles.ratingText}>{item.rating.toFixed(1)}</Text>
+            <View style={styles.rating}>
+              <Text style={styles.ratingTxt}>{item.rating}</Text>
+              {[...Array(5)].map((_, i) => (
+                <Ionicons
+                  key={i}
+                  name={i < Math.round(item.rating) ? "star" : "star-outline"}
+                  size={14}
+                  color="#f5c518"
+                />
+              ))}
             </View>
             <Text style={styles.productPrice}>{item.price}</Text>
           </Pressable>
@@ -86,11 +103,13 @@ const styles = StyleSheet.create({
   carouselContainer: { width: "100%", height: 200 },
   carouselImage: { width: width, height: 200, resizeMode: "cover" },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 25,
+    fontFamily: "Poppins_700Bold",
     fontWeight: "600",
     paddingHorizontal: 16,
     marginVertical: 12,
     color: "#333",
+    textAlign: "center",
   },
   gridContainer: {
     flexDirection: "row",
@@ -100,13 +119,11 @@ const styles = StyleSheet.create({
   },
   card: {
     width: "48%",
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#e4e3bbff",
     borderRadius: 12,
     marginBottom: 12,
     alignItems: "center",
     padding: 10,
-    borderWidth:1,
-    borderColor:'#d8ff75ff'
   },
   productImage: {
     width: "100%",
@@ -114,13 +131,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     resizeMode: "cover",
   },
-  productName: { fontSize: 14, fontWeight: "500", color: "#333", marginTop: 6 },
+  productName: {
+    fontSize: 14,
+    fontWeight: "500",
+    fontFamily: "Poppins_400Regular",
+    color: "#333",
+    marginTop: 6,
+  },
   productPrice: {
     fontSize: 14,
     fontWeight: "bold",
     color: "#4CAF50",
     marginTop: 2,
+    fontFamily: "Poppins_400Regular",
   },
-  ratingRow: { flexDirection: "row", alignItems: "center", marginTop: 4 },
-  ratingText: { fontSize: 12, color: "#555", marginLeft: 4 },
+  rating: { flexDirection: "row", marginTop: 4 },
+  ratingTxt: { fontFamily: "Poppins_400Regular", fontSize: 12, marginRight: 5 },
 });
