@@ -92,7 +92,7 @@ export default function Signup() {
       Alert.alert(
       "Success",
       "Account created successfully!",
-      [{ text: "OK", onPress: () => router.replace("/home") }]
+      [{ text: "OK", onPress: () => router.replace("/(tabs)") }]
     );
       
     } catch (error: any) {

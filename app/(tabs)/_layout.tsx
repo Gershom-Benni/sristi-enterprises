@@ -61,6 +61,7 @@ export default function TabsLayout() {
             onSubmitEditing={() => {
               setIsFocused(false);
               router.push("/(tabs)/searchResults");
+
             }}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
@@ -232,15 +233,15 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   searchBar: {
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#f0fcd3ff",
     borderRadius: 20,
     borderWidth:1,
     borderColor:'#eec33d',
-    paddingHorizontal: 12,
-    height: 'auto',
+    padding:20,
     fontSize:13,
     width: "100%",
-    fontFamily:'Poppins_400Regular'
+    fontFamily:'Poppins_400Regular',
+    paddingLeft:10,
   },
   suggestionBox: {
     position: "absolute",
