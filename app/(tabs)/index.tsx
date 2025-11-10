@@ -122,7 +122,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#e4e3bbff",
     borderRadius: 12,
     marginBottom: 12,
-    alignItems: "center",
     padding: 10,
   },
   productImage: {

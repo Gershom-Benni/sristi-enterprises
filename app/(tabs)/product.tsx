@@ -78,9 +78,14 @@ export default function ProductPage() {
       renderItem={() => (
         <View style={styles.container}>
           <Image source={{ uri: product.image }} style={styles.image} />
-
-          <View style={styles.titleReviewContainer}>
+          <View style={styles.titleWishPrice}>
+            <View style={styles.namePrice}>
             <Text style={styles.name}>{product.name}</Text>
+            <Text style={styles.price}>{product.price}</Text>
+          </View>
+
+          <View style={styles.WishReviewContainer}>
+            
             <View style={styles.starContainer}>
               {[...Array(5)].map((_, i) => (
                 <Ionicons
@@ -92,13 +97,24 @@ export default function ProductPage() {
                   size={14}
                   color="#f5c518"
                 />
+                
               ))}
               <Text style={styles.rating}>{product.rating}</Text>
             </View>
-            
+           <View>
+             <Ionicons
+            name={"heart-outline"}
+            style={styles.addwishListIcon}
+            size={35}
+            color={
+              "green"
+            }
+          />
+          <Text style={styles.wishlistTxt}>Wish List</Text>
+           </View>
+          </View>
           </View>
 
-          <Text style={styles.price}>{product.price}</Text>
 
           <Pressable style={({ pressed }) => ButtonClickAnimation({ pressed })}>
             <Text style={styles.loginBtnText}>Buy</Text>
@@ -152,8 +168,18 @@ const styles = StyleSheet.create({
   container: { backgroundColor: "#f8ffe6", padding: 10 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   image: { width: "100%", height: 250, borderRadius: 10, marginBottom: 12 },
-  name: { fontSize: 20, fontFamily: "Poppins_700Bold", color: "#333" },
+  name: { fontSize: 18, fontFamily: "Poppins_700Bold", color: "#333" },
   rating: { fontSize: 14, color: "#333",marginLeft:5},
+  addwishListIcon:{
+    marginLeft:'auto',
+    marginRight:'auto',
+  },
+  wishlistTxt:{
+    color:"green",
+    textAlign:'center',
+    fontFamily: "Poppins_400Regular",
+    fontSize:12
+  },
   price: {
     fontSize: 18,
     color: "green",
@@ -187,14 +213,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  WishReviewContainer:{
+    flexDirection: "column",
+    justifyContent: "space-between",
+    width:'auto',
+    marginTop:3.5
+  },
   reviewNameContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  namePrice:{
+    width:'70%'
+  },
+  titleWishPrice:{
+    display:'flex',
+    flexDirection:'row'
+  },
   noreviewTxt: { fontFamily: "Poppins_400Regular" },
   loginBtnText: {
     fontFamily: "Poppins_500Medium",
-    fontSize: 18,
+    fontSize: 16,
     color: "#333",
   },
   starContainer: {
