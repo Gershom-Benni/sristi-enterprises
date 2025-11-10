@@ -26,7 +26,7 @@ import {
 } from "react-native";
 import { Easing } from "react-native-reanimated";
 import { auth } from "../../firebase/config";
-
+import { useUserStore } from "@/store/useUserStore";
 const ButtonClickAnimation = ({
   pressed,
 }: {
@@ -52,7 +52,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-
+  const {signIn} = useUserStore();
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
@@ -66,7 +66,7 @@ export default function Login() {
       return;
     }
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signIn(email, password);
       Alert.alert("Success", "Logged in successfully!");
       router.push("/(tabs)");
     } catch (error: any) {

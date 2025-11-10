@@ -77,11 +77,11 @@ export default function HomePage() {
             style={styles.card}
             onPress={() => router.push({ pathname: "/product", params: { id: item.id } })}
           >
-            <Image source={{ uri: item.image }} style={styles.productImage} />
+            <Image source={{ uri: item.images[0] }} style={styles.productImage} />
             <Text style={styles.productName}>{item.name}</Text>
             <View style={styles.rating}>
               <Text style={styles.ratingTxt}>{item.rating}</Text>
-              {[...Array(5)].map((_, i) => (
+              {item.rating && [...Array(5)].map((_, i) => (
                 <Ionicons
                   key={i}
                   name={i < Math.round(item.rating) ? "star" : "star-outline"}

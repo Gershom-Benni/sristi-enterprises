@@ -24,10 +24,12 @@ import {
   ViewStyle,
 } from "react-native";
 import { Easing } from "react-native-reanimated";
-
+import { useUserStore } from "@/store/useUserStore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../firebase/config";
+
+
 
 const ButtonClickAnimation = ({
   pressed,
@@ -56,6 +58,7 @@ export default function Signup() {
     Poppins_500Medium,
     Poppins_700Bold,
   });
+  const { signUp } = useUserStore();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -75,15 +78,7 @@ export default function Signup() {
 
     try {
       setLoading(true);
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      await setDoc(doc(db, "users", userCredential.user.uid), {
-        email: email,
-        createdAt: new Date().toISOString(),
-      });
+      await signUp(email, password);
 
       setEmail("");
       setPassword("");
