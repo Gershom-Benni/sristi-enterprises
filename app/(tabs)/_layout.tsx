@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     top: 42,
     left: 0,
     right: 0,
-    backgroundColor: "#fff",
+    backgroundColor: "#f8ffe6",
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#ddd",
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     opacity: 0.8 
   },
   tabText: { 
-    fontSize: 12, 
+    fontSize: 11, 
     color: "#333", 
     marginTop: 3 ,
     fontFamily:'Poppins_400Regular'

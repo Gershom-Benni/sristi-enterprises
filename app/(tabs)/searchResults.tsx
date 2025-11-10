@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   image: { width: "100%", height: 120, borderRadius: 8 },
-  name: { fontSize: 14, fontWeight: "500", marginTop: 6,fontFamily: "Poppins_400Regular",color: "#333" },
+  name: { fontSize: 14, fontWeight: "500", marginTop: 6,fontFamily: "Poppins_500Medium",color: "#333" },
   price: { fontSize: 13, color: "#4CAF50", marginVertical: 2 ,fontFamily: "Poppins_500Medium",letterSpacing:1},
   rating: { flexDirection: "row", marginTop: 4 },
 });

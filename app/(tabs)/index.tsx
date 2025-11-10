@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 14,
     fontWeight: "500",
-    fontFamily: "Poppins_400Regular",
+    fontFamily: "Poppins_500Medium",
     color: "#333",
     marginTop: 6,
   },
