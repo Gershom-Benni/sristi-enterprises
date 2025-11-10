@@ -75,7 +75,7 @@ export default function HomePage() {
           <Pressable
             key={item.id}
             style={styles.card}
-            onPress={() => router.push(`/product`)}
+            onPress={() => router.push({ pathname: "/product", params: { id: item.id } })}
           >
             <Image source={{ uri: item.image }} style={styles.productImage} />
             <Text style={styles.productName}>{item.name}</Text>

@@ -41,7 +41,8 @@ export default function SearchResults() {
           renderItem={({ item }) => (
             <Pressable
               style={styles.card}
-              onPress={() => router.push(`/product/${item.id}` as any)}
+              onPress={() => router.push({ pathname: "/product", params: { id: item.id } })}
+
             >
               <Image source={{ uri: item.image }} style={styles.image} />
               <Text style={styles.name}>{item.name}</Text>
@@ -74,7 +75,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginVertical: 10,
     textAlign: "center",
-    fontFamily: "Poppins_700Bold"
+    fontFamily: "Poppins_700Bold",
+    color: "#333"
   },
   card: {
     width: "48%",
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   image: { width: "100%", height: 120, borderRadius: 8 },
-  name: { fontSize: 14, fontWeight: "500", marginTop: 6,fontFamily: "Poppins_400Regular" },
+  name: { fontSize: 14, fontWeight: "500", marginTop: 6,fontFamily: "Poppins_400Regular",color: "#333" },
   price: { fontSize: 13, color: "#4CAF50", marginVertical: 2 ,fontFamily: "Poppins_500Medium",letterSpacing:1},
   rating: { flexDirection: "row", marginTop: 4 },
 });
