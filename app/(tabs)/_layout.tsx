@@ -285,18 +285,23 @@ const styles = StyleSheet.create({
     flex: 1 
   },
   footer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    backgroundColor: "#f8ffe6",
-    borderTopWidth: 1,
-    borderTopColor: "#ddd",
-    paddingVertical: 10,
-    paddingBottom: 20,
-  },
-  tab: { 
-    alignItems: "center" 
-  },
+  flexDirection: "row",
+  justifyContent: "space-around",
+  alignItems: "center",
+  backgroundColor: "#f8ffe6",
+  borderTopWidth: 1,
+  borderTopColor: "#ddd",
+  paddingVertical: 5,
+  paddingBottom: 15,
+},
+
+tab: {
+  flex: 1,
+  alignItems: "center",
+  justifyContent: "center",
+  paddingVertical: 8,
+},
+
   activeTab: { 
     opacity: 0.8 
   },
