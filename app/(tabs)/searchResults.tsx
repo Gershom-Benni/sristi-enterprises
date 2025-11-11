@@ -44,20 +44,20 @@ export default function SearchResults() {
               onPress={() => router.push({ pathname: "/product", params: { id: item.id } })}
 
             >
-              <Image source={{ uri: item.image }} style={styles.image} />
+              <Image source={{ uri: item.images[0] }} style={styles.image} />
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.price}>{item.price}</Text>
-
               <View style={styles.rating}>
                 {[...Array(5)].map((_, i) => (
                   <Ionicons
                     key={i}
-                    name={i < Math.round(item.rating) ? "star" : "star-outline"}
+                    name={i < Math.round((item.rating === undefined ? 0:item.rating)) ? "star" : "star-outline"}
                     size={14}
                     color="#f5c518"
                   />
                 ))}
+                <Text style={styles.ratingTxt}>{item.rating}</Text>
               </View>
+              <Text style={styles.price}>₹{item.price}</Text>
             </Pressable>
           )}
           keyExtractor={(item) => item.id}
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
   },
   image: { width: "100%", height: 120, borderRadius: 8 },
   name: { fontSize: 14, fontWeight: "500", marginTop: 6,fontFamily: "Poppins_500Medium",color: "#333" },
-  price: { fontSize: 13, color: "#4CAF50", marginVertical: 2 ,fontFamily: "Poppins_500Medium",letterSpacing:1},
-  rating: { flexDirection: "row", marginTop: 4 },
+  price: { fontSize: 13, color: "#4CAF50" ,fontFamily: "Poppins_500Medium",letterSpacing:1,marginTop:6},
+  rating: { flexDirection: "row", marginTop: 5 },
+  ratingTxt: { fontFamily: "Poppins_400Regular", fontSize: 12, marginLeft: 6 },
 });

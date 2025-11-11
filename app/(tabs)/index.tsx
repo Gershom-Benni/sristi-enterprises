@@ -84,7 +84,7 @@ export default function HomePage() {
               {item.rating && [...Array(5)].map((_, i) => (
                 <Ionicons
                   key={i}
-                  name={i < Math.round(item.rating) ? "star" : "star-outline"}
+                  name={i < Math.round((item.rating === undefined ? 0:item.rating)) ? "star" : "star-outline"}
                   size={14}
                   color="#f5c518"
                 />
