@@ -1,4 +1,4 @@
-import React, { useEffect, useState ,useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   StyleProp,
   ViewStyle,
   FlatList,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useProductStore, Review } from "../../store/useProductStore";
@@ -96,10 +96,10 @@ export default function ProductPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loadingReviews, setLoadingReviews] = useState(true);
-const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(0);
   const { products, getReviewsByProductId } = useProductStore();
   const { user, toggleWishlist } = useUserStore();
-const flatListRef = useRef<FlatList>(null);
+  const flatListRef = useRef<FlatList>(null);
   const product = products.find((p) => p.id === id);
   const isWishlisted = user?.wishlist?.includes(product?.id || "") ?? false;
 
@@ -118,15 +118,15 @@ const flatListRef = useRef<FlatList>(null);
     };
     fetchReviews();
   }, [id]);
-useEffect(() => {
-  if (!product?.images?.length) return;
-  const timer = setInterval(() => {
-    const nextIndex = (index + 1) % product.images.length;
-    setIndex(nextIndex);
-    flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
-  }, 3000);
-  return () => clearInterval(timer);
-}, [index, product?.images?.length]);
+  useEffect(() => {
+    if (!product?.images?.length) return;
+    const timer = setInterval(() => {
+      const nextIndex = (index + 1) % product.images.length;
+      flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+      setIndex(nextIndex);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [index, product?.images?.length]);
 
   if (!product) {
     return (
@@ -142,18 +142,34 @@ useEffect(() => {
       renderItem={() => (
         <View style={styles.container}>
           <View style={styles.carouselContainer}>
-  <FlatList
-    ref={flatListRef}
-    data={product.images}
-    horizontal
-    pagingEnabled
-    showsHorizontalScrollIndicator={false}
-    renderItem={({ item }) => (
-      <Image source={{ uri: item }} style={styles.carouselImage} />
-    )}
-    keyExtractor={(item, index) => index.toString()}
-  />
-</View>
+            <FlatList
+              ref={flatListRef}
+              data={product.images}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <Image source={{ uri: item }} style={styles.carouselImage} />
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              onMomentumScrollEnd={(event) => {
+                const contentOffsetX = event.nativeEvent.contentOffset.x;
+                const currentIndex = Math.round(
+                  contentOffsetX / event.nativeEvent.layoutMeasurement.width
+                );
+                setIndex(currentIndex);
+              }}
+            />
+
+            <View style={styles.dotsContainer}>
+              {product.images.map((_, i) => (
+                <View
+                  key={i}
+                  style={[styles.dot, { opacity: i === index ? 1 : 0.3 }]}
+                />
+              ))}
+            </View>
+          </View>
 
           <View style={styles.titleWishPrice}>
             <View style={styles.namePrice}>
@@ -183,9 +199,10 @@ useEffect(() => {
                 <AnimatedHeart
                   isWishlisted={isWishlisted}
                   onPress={() => toggleWishlist(product.id)}
-                  
                 />
-                <Text style={styles.wishlistTxt}>{isWishlisted ? "Wish List":"Add To Wish List"}</Text>
+                <Text style={styles.wishlistTxt}>
+                  {isWishlisted ? "Wish List" : "Add To Wish List"}
+                </Text>
               </View>
             </View>
           </View>
@@ -220,9 +237,7 @@ useEffect(() => {
                       <Ionicons
                         key={i}
                         name={
-                          i < Math.round(item.rating)
-                            ? "star"
-                            : "star-outline"
+                          i < Math.round(item.rating) ? "star" : "star-outline"
                         }
                         size={14}
                         color="#f5c518"
@@ -268,9 +283,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: "#333",
   },
-  animatedHeart:{
-    marginLeft:'auto',
-    marginRight:'auto'
+  animatedHeart: {
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   desc: { fontSize: 13, color: "#333", fontFamily: "Poppins_400Regular" },
   reviewCard: {
@@ -306,17 +321,27 @@ const styles = StyleSheet.create({
   },
   starContainer: { flexDirection: "row" },
   carouselContainer: {
-  width: "100%",
-  height: 250,
-  borderRadius: 10,
-  overflow: "hidden",
-  marginBottom: 12,
-},
-carouselImage: {
-  width: Dimensions.get('window').width, // or use Dimensions.get('window').width if you want full width
-  height: 250,
-  // borderRadius: 10,
-  resizeMode: "cover",
-},
-
+    width: "100%",
+    height: 250,
+    borderRadius: 10,
+    overflow: "hidden",
+    marginBottom: 12,
+  },
+  carouselImage: {
+    width: Dimensions.get("window").width,
+    height: 250,
+    resizeMode: "cover",
+  },
+  dotsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 8,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "green",
+    marginHorizontal: 4,
+  },
 });
