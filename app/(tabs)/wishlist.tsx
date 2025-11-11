@@ -128,13 +128,14 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: "Poppins_700Bold",
-    fontSize: 14,
+    fontSize: 16,
     color: "#333",
+    fontWeight: "600"
   },
   price: {
     fontFamily: "Poppins_500Medium",
-    fontSize: 15,
-    color: "green",
+    fontSize: 14,
+    color: "#4CAF50",
     marginTop: 2,
   },
   center: {

@@ -162,9 +162,10 @@ const styles = StyleSheet.create({
   },
   name: { fontSize: 16, fontFamily: "Poppins_700Bold", fontWeight: "600" },
   price: {
-    color: "#2ecc71",
+    color: "#4CAF50",
     fontFamily: "Poppins_500Medium",
     marginVertical: 4,
+    fontSize:14
   },
   qtyRow: { flexDirection: "row", alignItems: "center", marginVertical: 3 },
   qtyBtn: {
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
   },
   totalAmount: {
     fontFamily: "Poppins_400Regular",
-    color: "#2ecc71",
+    color: "#4CAF50",
     fontSize: 14,
   },
   buyBtn: {
