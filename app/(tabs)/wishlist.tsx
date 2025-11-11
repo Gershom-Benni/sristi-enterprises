@@ -70,9 +70,9 @@ export default function Wishlist() {
       renderItem={({ item }) => (
         <Pressable onPress={()=>router.push({ pathname: "/product", params: { id: item.id } })}>
           <View style={styles.card} >
-            <Pressable style={styles.imageContainer} >
+            <View style={styles.imageContainer} >
               <Image source={{ uri: item.images?.[0] }} style={styles.image} />
-            </Pressable>
+            </View>
 
           <View style={styles.details}>
             <Text style={styles.name}>{item.name}</Text>
