@@ -182,8 +182,9 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     marginTop: 6,
     alignItems: "center",
+    
   },
-  removeText: { color: "white" },
+  removeText: { color: "white", fontFamily: "Poppins_500Medium",fontSize:13 },
   totalContainer: {
     backgroundColor: "#e4e3bbff",
     paddingTop: 6,
@@ -208,11 +209,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   buyBtn: {
-    backgroundColor: "#81C784",
+    backgroundColor: "#eec33d",
     paddingVertical: 10,
     borderRadius: 10,
     alignItems: "center",
     marginTop: 8,
   },
-  buyText: { color: "white", fontSize: 18, fontWeight: "bold" },
+  buyText: { color: "#333", fontSize: 16, fontFamily: "Poppins_500Medium"},
 });
