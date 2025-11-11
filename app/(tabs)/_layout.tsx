@@ -84,7 +84,7 @@ export default function TabsLayout() {
                     style={styles.suggestionItem}
                   >
                     <Text style={styles.suggestionText}>{item.name}</Text>
-                    <Text style={styles.suggestionPrice}>{item.price}</Text>
+                    <Text style={styles.suggestionPrice}>₹{item.price}</Text>
                   </Pressable>
                 )}
               />
@@ -253,11 +253,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     maxHeight: 'auto',
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 5,
+    elevation: 2,
     zIndex:1000
   },
   suggestionItem: {
