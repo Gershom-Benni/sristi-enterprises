@@ -90,7 +90,7 @@ export default function HomePage() {
                 />
               ))}
             </View>
-            <Text style={styles.productPrice}>{item.price}</Text>
+            <Text style={styles.productPrice}>₹{item.price}</Text>
           </Pressable>
         ))}
       </View>

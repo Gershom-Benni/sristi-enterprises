@@ -3,19 +3,14 @@ import { create } from "zustand";
 import {
   collection,
   getDocs,
-  doc,
-  getDoc,
   query,
   orderBy,
   onSnapshot,
   DocumentData,
   serverTimestamp,
   addDoc,
-  setDoc,
-  collectionGroup,
-  where,
 } from "firebase/firestore";
-import { db } from "..//firebase/config";
+import { db } from "../firebase/config";
 
 export type Review = {
   id: string;
@@ -36,7 +31,7 @@ export type Product = {
   rating?: number;
   description?: string;
   createdAt?: any;
-  reviews?:Review[]
+  reviews?: Review[];
 };
 
 type ProductStore = {
@@ -48,46 +43,58 @@ type ProductStore = {
   subscribeToProducts: () => () => void;
   getProductById: (id: string) => Product | undefined;
   getReviewsByProductId: (productId: string) => Promise<Review[]>;
-  addReview: (productId: string, review: Omit<Review, "id" | "createdAt">) => Promise<void>;
+  addReview: (
+    productId: string,
+    review: Omit<Review, "id" | "createdAt">
+  ) => Promise<void>;
 };
 
 export const useProductStore = create<ProductStore>((set, get) => ({
   products: [],
-  searchQuery:"",
-
+  searchQuery: "",
   fetchProducts: async () => {
     const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
     const snap = await getDocs(q);
-    const products = snap.docs.map((d) => ({ id: d.id, ...(d.data() as DocumentData) })) as Product[];
+    const products = snap.docs.map((d) => ({
+      id: d.id,
+      ...(d.data() as DocumentData),
+    })) as Product[];
     set({ products });
   },
 
   subscribeToProducts: () => {
     const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const products = snapshot.docs.map((d) => ({ id: d.id, ...(d.data() as DocumentData) })) as Product[];
+      const products = snapshot.docs.map((d) => ({
+        id: d.id,
+        ...(d.data() as DocumentData),
+      })) as Product[];
       set({ products });
     });
     return unsubscribe;
   },
 
-  getProductById: (id: string) => {
+  getProductById: (id) => {
     const { products } = get();
     return products.find((p) => p.id === id);
   },
 
-  getReviewsByProductId: async (productId: string) => {
+  getReviewsByProductId: async (productId) => {
     const reviewsCol = collection(db, "products", productId, "reviews");
     const q = query(reviewsCol, orderBy("createdAt", "desc"));
     const snap = await getDocs(q);
-    return snap.docs.map((d) => ({ id: d.id, ...(d.data() as DocumentData) })) as Review[];
+    return snap.docs.map((d) => ({
+      id: d.id,
+      ...(d.data() as DocumentData),
+    })) as Review[];
   },
 
   addReview: async (productId, review) => {
     const reviewsCol = collection(db, "products", productId, "reviews");
     await addDoc(reviewsCol, { ...review, createdAt: serverTimestamp() });
   },
-  setSearchQuery: (text: string) => set({ searchQuery: text }),
+
+  setSearchQuery: (text) => set({ searchQuery: text }),
 
   filteredProducts: () => {
     const { products, searchQuery } = get();

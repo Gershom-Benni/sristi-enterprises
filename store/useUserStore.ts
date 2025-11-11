@@ -42,8 +42,8 @@ type UserData = {
   createdAt?: any;
   profilePic?: string;
   cart?: CartItem[];
-  wishlist?: string[]; // product ids
-  orders?: string[]; // order ids
+  wishlist?: string[]; 
+  orders?: string[]; 
 };
 
 type UserStore = {
@@ -68,7 +68,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
   initAuthListener: () => {
     onAuthStateChanged(auth, async (u) => {
       if (u) {
-        // user signed in
         await get().loadUserDoc(u.uid);
       } else {
         set({ user: null, loading: false });
@@ -108,9 +107,10 @@ export const useUserStore = create<UserStore>((set, get) => ({
     const docRef = doc(db, "users", uid);
     const snap = await getDoc(docRef);
     if (snap.exists()) {
-      set({ user: snap.data() as UserData, loading: false });
+      const data = snap.data() as UserData;
+  set({ user: { ...data, id: uid }, loading: false });
+
     } else {
-      // create default user doc if not exists
       const u = auth.currentUser;
       const userDoc = {
         id: uid,
@@ -131,11 +131,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
     const user = get().user;
     if (!user) throw new Error("Not signed in");
     const uid = user.id;
-    // naive approach: push new object to cart array (could also store as map)
-    // We'll read current, merge server-side for safety
     const docRef = doc(db, "users", uid);
-    // Here we cannot use arrayUnion for objects with same productId easily,
-    // so fetch, update client-side then set.
     const snap = await getDoc(docRef);
     const data = snap.exists() ? (snap.data() as DocumentData) : {};
     const cart: CartItem[] = (data.cart as CartItem[]) || [];
@@ -178,22 +174,38 @@ export const useUserStore = create<UserStore>((set, get) => ({
   },
 
   toggleWishlist: async (productId) => {
-    const user = get().user;
-    if (!user) throw new Error("Not signed in");
-    const uid = user.id;
-    const docRef = doc(db, "users", uid);
-    const snap = await getDoc(docRef);
-    const wishlist: string[] = (snap.exists() ? (snap.data() as DocumentData).wishlist : []) || [];
-    const exists = wishlist.includes(productId);
-    const newWishlist = exists ? wishlist.filter((id) => id !== productId) : [...wishlist, productId];
-    await updateDoc(docRef, { wishlist: newWishlist });
-    await get().loadUserDoc(uid);
-  },
+  const user = get().user;
+  if (!user) throw new Error("Not signed in");
+  const uid = user.id;
+  const docRef = doc(db, "users", uid);
+  const wishlist = Array.isArray(user.wishlist) ? user.wishlist : [];
+
+  const isInWishlist = wishlist.includes(productId);
+
+  try {
+    await updateDoc(docRef, {
+      wishlist: isInWishlist
+        ? arrayRemove(productId)
+        : arrayUnion(productId),
+    });
+
+    set({
+      user: {
+        ...user,
+        wishlist: isInWishlist
+          ? wishlist.filter((id) => id !== productId)
+          : [...wishlist, productId],
+      },
+    });
+  } catch (error) {
+    console.error("Error toggling wishlist:", error);
+  }
+},
+
 
   placeOrder: async (items, totalCost) => {
     const user = get().user;
     if (!user) throw new Error("Not signed in");
-    // create order doc
     const order = {
       userId: user.id,
       items,
@@ -202,10 +214,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
       createdAt: serverTimestamp(),
     };
     const orderRef = await addDoc(collection(db, "orders"), order);
-    // add orderId to user.orders array
     const userRef = doc(db, "users", user.id);
-    await updateDoc(userRef, { orders: arrayUnion(orderRef.id), cart: [] }); // clear cart
-    // reload user doc
+    await updateDoc(userRef, { orders: arrayUnion(orderRef.id), cart: [] }); 
     await get().loadUserDoc(user.id);
   },
 }));
