@@ -9,7 +9,9 @@ import {
   ViewStyle,
   FlatList,
   Dimensions,
+  Alert,
 } from "react-native";
+
 import { useLocalSearchParams } from "expo-router";
 import { useProductStore, Review } from "../../store/useProductStore";
 import {
@@ -102,12 +104,26 @@ export default function ProductPage() {
   const flatListRef = useRef<FlatList>(null);
   const product = products.find((p) => p.id === id);
   const isWishlisted = user?.wishlist?.includes(product?.id || "") ?? false;
-
+  const { addToCart } = useUserStore();
   useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_700Bold,
   });
+   const handleAddToCart = async () => {
+  if (!product?.id) {
+    Alert.alert("Error", "Product not found!");
+    return;
+  }
+
+  try {
+    await addToCart(product.id);
+    Alert.alert("Success", "Added to Cart!");
+  } catch (error) {
+    Alert.alert("Error", (error as Error).message);
+  }
+};
+
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -211,10 +227,12 @@ export default function ProductPage() {
             <Text style={styles.loginBtnText}>Buy</Text>
           </Pressable>
           <Pressable
-            style={({ pressed }) => LoginButtonClickAnimation({ pressed })}
-          >
-            <Text style={styles.loginBtnText}>Add to Cart</Text>
-          </Pressable>
+  onPress={handleAddToCart}
+  style={({ pressed }) => LoginButtonClickAnimation({ pressed })}
+>
+  <Text style={styles.loginBtnText}>Add to Cart</Text>
+</Pressable>
+
 
           <Text style={styles.heading}>Description</Text>
           <Text style={styles.desc}>

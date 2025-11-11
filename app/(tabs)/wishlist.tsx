@@ -79,7 +79,7 @@ export default function Wishlist() {
             <Text style={styles.price}>₹{item.price}</Text>
           </View>
 
-          <Pressable onPress={() => toggleWishlist(item.id)}>
+          <Pressable onPress={() => toggleWishlist(item.id)} style={styles.heart}>
             <Ionicons name="heart" size={28} color="red" />
           </Pressable>
         </View>
@@ -96,6 +96,9 @@ const styles = StyleSheet.create({
     flex:1,
     padding: 10,
     backgroundColor: "#f8ffe6",
+  },
+  heart:{
+    marginRight:10
   },
   card: {
     flexDirection: "row",
@@ -124,12 +127,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   name: {
-    fontFamily: "Poppins_500Medium",
+    fontFamily: "Poppins_700Bold",
     fontSize: 14,
     color: "#333",
   },
   price: {
-    fontFamily: "Poppins_700Bold",
+    fontFamily: "Poppins_500Medium",
     fontSize: 15,
     color: "green",
     marginTop: 2,
@@ -138,11 +141,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#f8ffe6"
   },
   msg: {
-    fontFamily: "Poppins_400Regular",
-    fontSize: 14,
-    color: "#333",
+    fontFamily: "Poppins_500Medium",
+    fontSize: 18,
+    color: "#666",
     marginTop: 10,
   },
 });
