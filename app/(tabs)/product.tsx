@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useRef} from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   StyleProp,
   ViewStyle,
   FlatList,
+  Dimensions
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useProductStore, Review } from "../../store/useProductStore";
@@ -95,10 +96,10 @@ export default function ProductPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loadingReviews, setLoadingReviews] = useState(true);
-
+const [index, setIndex] = useState(0);
   const { products, getReviewsByProductId } = useProductStore();
   const { user, toggleWishlist } = useUserStore();
-
+const flatListRef = useRef<FlatList>(null);
   const product = products.find((p) => p.id === id);
   const isWishlisted = user?.wishlist?.includes(product?.id || "") ?? false;
 
@@ -117,6 +118,15 @@ export default function ProductPage() {
     };
     fetchReviews();
   }, [id]);
+useEffect(() => {
+  if (!product?.images?.length) return;
+  const timer = setInterval(() => {
+    const nextIndex = (index + 1) % product.images.length;
+    setIndex(nextIndex);
+    flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+  }, 3000);
+  return () => clearInterval(timer);
+}, [index, product?.images?.length]);
 
   if (!product) {
     return (
@@ -131,7 +141,20 @@ export default function ProductPage() {
       data={[{ key: "content" }]}
       renderItem={() => (
         <View style={styles.container}>
-          <Image source={{ uri: product.images[0] }} style={styles.image} />
+          <View style={styles.carouselContainer}>
+  <FlatList
+    ref={flatListRef}
+    data={product.images}
+    horizontal
+    pagingEnabled
+    showsHorizontalScrollIndicator={false}
+    renderItem={({ item }) => (
+      <Image source={{ uri: item }} style={styles.carouselImage} />
+    )}
+    keyExtractor={(item, index) => index.toString()}
+  />
+</View>
+
           <View style={styles.titleWishPrice}>
             <View style={styles.namePrice}>
               <Text style={styles.name}>{product.name}</Text>
@@ -282,4 +305,18 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   starContainer: { flexDirection: "row" },
+  carouselContainer: {
+  width: "100%",
+  height: 250,
+  borderRadius: 10,
+  overflow: "hidden",
+  marginBottom: 12,
+},
+carouselImage: {
+  width: Dimensions.get('window').width, // or use Dimensions.get('window').width if you want full width
+  height: 250,
+  // borderRadius: 10,
+  resizeMode: "cover",
+},
+
 });
