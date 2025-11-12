@@ -27,6 +27,7 @@ export type Order = {
   items: CartItem[];
   totalCost: number;
   status: string;
+  paymentMethod:string
   createdAt?: any;
 };
 
@@ -55,7 +56,7 @@ type UserStore = {
   removeFromCart: (productId: string) => Promise<void>;
   updateCartQty: (productId: string, qty: number) => Promise<void>;
   toggleWishlist: (productId: string) => Promise<void>;
-  placeOrder: (items: CartItem[], totalCost: number) => Promise<void>;
+  placeOrder: (items: CartItem[], totalCost: number, paymentMethod:string) => Promise<void>;
   updateContactInfo: (address?: string, phoneNumber?: string) => Promise<void>; 
 };
 
@@ -200,7 +201,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 
-  placeOrder: async (items, totalCost) => {
+  placeOrder: async (items:any, totalCost:any, paymentMethod:string) => {
     const user = get().user;
     if (!user) throw new Error("Not signed in");
     const order = {
@@ -208,6 +209,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       items,
       totalCost,
       status: "placed",
+      paymentMethod,
       createdAt: serverTimestamp(),
     };
     const orderRef = await addDoc(collection(db, "orders"), order);

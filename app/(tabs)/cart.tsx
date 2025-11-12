@@ -15,7 +15,9 @@ import {
   Poppins_500Medium,
   Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
+import { useRouter } from "expo-router";
 export default function CartPage() {
+  const router = useRouter();
   const { user, removeFromCart, updateCartQty } = useUserStore();
   const { products } = useProductStore();
 
@@ -56,7 +58,8 @@ export default function CartPage() {
     if (!product) return null;
 
     return (
-      <View style={styles.card}>
+      <Pressable onPress={()=>router.push({ pathname: "/product", params: { id: product.id } })}>
+          <View style={styles.card}>
         <View style={styles.leftRight}>
           <View style={{ flex: 1 }}>
             <Text style={styles.name}>{product.name}</Text>
@@ -95,6 +98,7 @@ export default function CartPage() {
           <Text style={styles.removeText}>Remove</Text>
         </Pressable>
       </View>
+      </Pressable>
     );
   };
 
@@ -114,14 +118,14 @@ export default function CartPage() {
       </View>
 
       <Pressable
-        style={({ pressed }) => [
+  style={({ pressed }) => [
     styles.buyBtn,
     { opacity: pressed ? 0.7 : 1, transform: [{ scale: pressed ? 0.97 : 1 }] },
   ]}
-        onPress={() => Alert.alert("Buy Now clicked")}
-      >
-        <Text style={styles.buyText}>Buy Now</Text>
-      </Pressable>
+  onPress={() => router.push("/orderSummary?from=cart")}
+>
+  <Text style={styles.buyText}>Buy Now</Text>
+</Pressable>
     </View>
   );
 }

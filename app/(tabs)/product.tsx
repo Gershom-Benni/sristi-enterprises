@@ -11,7 +11,7 @@ import {
   Dimensions,
   Alert,
 } from "react-native";
-
+import { useRouter } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
 import { useProductStore, Review } from "../../store/useProductStore";
 import {
@@ -95,6 +95,7 @@ const AnimatedHeart = ({
 };
 
 export default function ProductPage() {
+  const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loadingReviews, setLoadingReviews] = useState(true);
@@ -223,9 +224,13 @@ export default function ProductPage() {
             </View>
           </View>
 
-          <Pressable style={({ pressed }) => ButtonClickAnimation({ pressed })}>
-            <Text style={styles.loginBtnText}>Buy</Text>
-          </Pressable>
+          <Pressable
+  style={({ pressed }) => ButtonClickAnimation({ pressed })}
+  onPress={() => router.push(`/orderSummary?from=product-${product.id}`)}
+>
+  <Text style={styles.loginBtnText}>Buy</Text>
+</Pressable>
+
           <Pressable
   onPress={handleAddToCart}
   style={({ pressed }) => LoginButtonClickAnimation({ pressed })}
@@ -348,7 +353,7 @@ const styles = StyleSheet.create({
   carouselImage: {
     width: Dimensions.get("window").width,
     height: 250,
-    resizeMode: "cover",
+    resizeMode: "stretch",
   },
   dotsContainer: {
     flexDirection: "row",
