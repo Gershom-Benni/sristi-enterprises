@@ -1,29 +1,24 @@
 // store/useUserStore.ts
-import { create } from "zustand";
-import {
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  arrayRemove,
-  serverTimestamp,
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  where,
-  DocumentData,
-  onSnapshot
-} from "firebase/firestore";
-import { auth, db } from "..//firebase/config";
 import {
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged,
-  User as FirebaseUser,
 } from "firebase/auth";
+import {
+  addDoc,
+  arrayRemove,
+  arrayUnion,
+  collection,
+  doc,
+  DocumentData,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { create } from "zustand";
+import { auth, db } from "../firebase/config";
 
 export type CartItem = { productId: string; qty: number };
 export type Order = {
@@ -42,8 +37,10 @@ type UserData = {
   createdAt?: any;
   profilePic?: string;
   cart?: CartItem[];
-  wishlist?: string[]; 
-  orders?: string[]; 
+  wishlist?: string[];
+  orders?: string[];
+  address?: string;
+  phoneNumber?: string; 
 };
 
 type UserStore = {
@@ -59,6 +56,7 @@ type UserStore = {
   updateCartQty: (productId: string, qty: number) => Promise<void>;
   toggleWishlist: (productId: string) => Promise<void>;
   placeOrder: (items: CartItem[], totalCost: number) => Promise<void>;
+  updateContactInfo: (address?: string, phoneNumber?: string) => Promise<void>; 
 };
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -87,6 +85,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
       cart: [],
       wishlist: [],
       orders: [],
+      address: "",
+      phoneNumber: "", 
     };
     await setDoc(doc(db, "users", uid), userDoc);
     set({ user: { ...userDoc, createdAt: new Date() }, loading: false });
@@ -108,8 +108,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
     const snap = await getDoc(docRef);
     if (snap.exists()) {
       const data = snap.data() as UserData;
-  set({ user: { ...data, id: uid }, loading: false });
-
+      set({ user: { ...data, id: uid }, loading: false });
     } else {
       const u = auth.currentUser;
       const userDoc = {
@@ -121,6 +120,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
         cart: [],
         wishlist: [],
         orders: [],
+        address: "",
+        phoneNumber: "",
       };
       await setDoc(docRef, userDoc);
       set({ user: userDoc as any, loading: false });
@@ -137,11 +138,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
     const cart: CartItem[] = (data.cart as CartItem[]) || [];
 
     const idx = cart.findIndex((c) => c.productId === productId);
-    if (idx >= 0) {
-      cart[idx].qty += qty;
-    } else {
-      cart.push({ productId, qty });
-    }
+    if (idx >= 0) cart[idx].qty += qty;
+    else cart.push({ productId, qty });
+
     await updateDoc(docRef, { cart });
     await get().loadUserDoc(uid);
   },
@@ -174,34 +173,32 @@ export const useUserStore = create<UserStore>((set, get) => ({
   },
 
   toggleWishlist: async (productId) => {
-  const user = get().user;
-  if (!user) throw new Error("Not signed in");
-  const uid = user.id;
-  const docRef = doc(db, "users", uid);
-  const wishlist = Array.isArray(user.wishlist) ? user.wishlist : [];
+    const user = get().user;
+    if (!user) throw new Error("Not signed in");
+    const uid = user.id;
+    const docRef = doc(db, "users", uid);
+    const wishlist = Array.isArray(user.wishlist) ? user.wishlist : [];
+    const isInWishlist = wishlist.includes(productId);
 
-  const isInWishlist = wishlist.includes(productId);
-
-  try {
-    await updateDoc(docRef, {
-      wishlist: isInWishlist
-        ? arrayRemove(productId)
-        : arrayUnion(productId),
-    });
-
-    set({
-      user: {
-        ...user,
+    try {
+      await updateDoc(docRef, {
         wishlist: isInWishlist
-          ? wishlist.filter((id) => id !== productId)
-          : [...wishlist, productId],
-      },
-    });
-  } catch (error) {
-    console.error("Error toggling wishlist:", error);
-  }
-},
+          ? arrayRemove(productId)
+          : arrayUnion(productId),
+      });
 
+      set({
+        user: {
+          ...user,
+          wishlist: isInWishlist
+            ? wishlist.filter((id) => id !== productId)
+            : [...wishlist, productId],
+        },
+      });
+    } catch (error) {
+      console.error("Error toggling wishlist:", error);
+    }
+  },
 
   placeOrder: async (items, totalCost) => {
     const user = get().user;
@@ -215,7 +212,22 @@ export const useUserStore = create<UserStore>((set, get) => ({
     };
     const orderRef = await addDoc(collection(db, "orders"), order);
     const userRef = doc(db, "users", user.id);
-    await updateDoc(userRef, { orders: arrayUnion(orderRef.id), cart: [] }); 
+    await updateDoc(userRef, { orders: arrayUnion(orderRef.id), cart: [] });
     await get().loadUserDoc(user.id);
+  },
+
+  updateContactInfo: async (address?: string, phoneNumber?: string) => {
+    const user = get().user;
+    if (!user) throw new Error("Not signed in");
+
+    const uid = user.id;
+    const docRef = doc(db, "users", uid);
+
+    const updateData: Partial<UserData> = {};
+    if (address !== undefined) updateData.address = address;
+    if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber;
+
+    await updateDoc(docRef, updateData);
+    set({ user: { ...user, ...updateData } });
   },
 }));
