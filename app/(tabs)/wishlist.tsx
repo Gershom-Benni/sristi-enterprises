@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: "Poppins_700Bold",
-    fontSize: 16,
+    fontSize: 15,
     color: "#333",
     fontWeight: "600"
   },

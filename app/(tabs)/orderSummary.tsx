@@ -109,9 +109,8 @@ export default function OrderSummary() {
       <Text style={styles.headerCell}>Cost</Text>
     </View>
 
-    {/* ✅ Replaced FlatList with map */}
     {enrichedItems.map((item, index) => {
-  if (!item) return null; // ✅ Correct null check
+  if (!item) return null;
 
   return (
     <View key={index} style={styles.row}>

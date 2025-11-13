@@ -10,6 +10,7 @@ import {
   Poppins_500Medium,
   Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
+
 export default function OrdersPage() {
   const [selectedTab, setSelectedTab] = useState<"pending" | "completed">("pending");
   const [orders, setOrders] = useState<any[]>([]);
@@ -46,9 +47,11 @@ useFonts({
     fetchOrders();
   }, [user]);
 
-  const filteredOrders = orders.filter((o) =>
-    selectedTab === "pending" ? o.status !== "delivered" : o.status === "delivered"
-  );
+  const filteredOrders = orders.filter((o) => {
+  const status = o.status?.toLowerCase().trim();
+  return selectedTab === "pending" ? status !== "delivered" : status === "delivered";
+});
+
 
   const renderOrder = ({ item }: { item: any }) => {
     const firstItem = item.items[0];
