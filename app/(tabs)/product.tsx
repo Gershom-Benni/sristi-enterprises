@@ -12,15 +12,9 @@ import {
   Alert,
   TextInput,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { useLocalSearchParams } from "expo-router";
+import { useRouter,useLocalSearchParams } from "expo-router";
 import { useProductStore, Review } from "../../store/useProductStore";
-import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-  useFonts,
-} from "@expo-google-fonts/poppins";
+
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -109,12 +103,6 @@ export default function ProductPage() {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [hasReviewed, setHasReviewed] = useState(false);
-
-  useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_700Bold,
-  });
 
   const handleAddToCart = async () => {
     if (!product?.id) {
@@ -284,38 +272,10 @@ export default function ProductPage() {
             {product.description || "No description available."}
           </Text>
 
-          <Text style={styles.heading}>Customer Reviews</Text>
-
-          {loadingReviews ? (
-            <Text>Loading reviews...</Text>
-          ) : reviews.length === 0 ? (
-            <Text style={styles.noreviewTxt}>No reviews yet.</Text>
-          ) : (
-            reviews.map((item) => (
-              <View key={item.id} style={styles.reviewCard}>
-                <View style={styles.reviewNameContainer}>
-                  <Text style={styles.user}>{item.username}</Text>
-                  <View style={styles.starContainer}>
-                    {[...Array(5)].map((_, i) => (
-                      <Ionicons
-                        key={i}
-                        name={
-                          i < Math.round(item.rating) ? "star" : "star-outline"
-                        }
-                        size={14}
-                        color="#f5c518"
-                        style={styles.userStar}
-                      />
-                    ))}
-                  </View>
-                </View>
-                <Text style={styles.comment}>{item.comment}</Text>
-              </View>
-            ))
-          )}
+         
           {!hasReviewed && user && (
             <View style={styles.reviewInputBox}>
-              <Text style={styles.heading}>Add Your Review</Text>
+              <Text style={styles.AddReviewsTxt}>Add Your Review</Text>
               <View style={{ flexDirection: "row", marginVertical: 10 }}>
                 {[1, 2, 3, 4, 5].map((i) => (
                   <Pressable key={i} onPress={() => setRating(i)}>
@@ -344,6 +304,35 @@ export default function ProductPage() {
               </Pressable>
             </View>
           )}
+           <Text style={styles.heading}>Customer Reviews</Text>
+
+          {loadingReviews ? (
+            <Text>Loading reviews...</Text>
+          ) : reviews.length === 0 ? (
+            <Text style={styles.noreviewTxt}>No reviews yet.</Text>
+          ) : (
+            reviews.map((item) => (
+              <View key={item.id} style={styles.reviewCard}>
+                <View style={styles.reviewNameContainer}>
+                  <Text style={styles.user}>{item.username}</Text>
+                  <View style={styles.starContainer}>
+                    {[...Array(5)].map((_, i) => (
+                      <Ionicons
+                        key={i}
+                        name={
+                          i < Math.round(item.rating) ? "star" : "star-outline"
+                        }
+                        size={14}
+                        color="#f5c518"
+                        style={styles.userStar}
+                      />
+                    ))}
+                  </View>
+                </View>
+                <Text style={styles.comment}>{item.comment}</Text>
+              </View>
+            ))
+          )}
         </View>
       )}
       showsVerticalScrollIndicator={false}
@@ -356,24 +345,31 @@ const styles = StyleSheet.create({
   namePrice: { width: "70%" },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   image: { width: "100%", height: 250, borderRadius: 10, marginBottom: 12 },
-  name: { fontSize: 18, fontFamily: "Poppins_700Bold", color: "#333" },
+  name: { fontSize: 18,  color: "#333" , fontWeight:700},
   rating: { fontSize: 14, color: "#333", marginLeft: 5 },
   wishlistTxt: {
     color: "green",
     textAlign: "center",
-    fontFamily: "Poppins_400Regular",
+    fontWeight:400,
     fontSize: 12,
   },
   price: {
     fontSize: 18,
     color: "green",
-    marginTop: 6,
-    fontFamily: "Poppins_500Medium",
+    marginTop: 9,
+    fontWeight:500,
   },
   heading: {
     fontSize: 20,
-    fontFamily: "Poppins_700Bold",
+    fontWeight:700,
     marginTop: 20,
+    marginBottom: 8,
+    color: "#333",
+  },
+  AddReviewsTxt: {
+    fontSize: 20,
+    fontWeight:700,
+    marginTop:8,
     marginBottom: 8,
     color: "#333",
   },
@@ -381,18 +377,18 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginRight: "auto",
   },
-  desc: { fontSize: 13, color: "#333", fontFamily: "Poppins_400Regular" },
+  desc: { fontSize: 14.5, color: "#333",fontWeight:400, },
   reviewCard: {
     backgroundColor: "#e4e3bb",
     padding: 10,
     borderRadius: 8,
     marginBottom: 8,
   },
-  user: { fontSize: 16, color: "#333", fontFamily: "Poppins_500Medium" },
+  user: { fontSize: 16, color: "#333",fontWeight:500, },
   comment: {
     marginTop: 4,
     color: "#333",
-    fontFamily: "Poppins_400Regular",
+    fontWeight:400,
     fontSize: 13,
   },
   star: { marginTop: 2.5, marginRight: 2.5 },
@@ -407,9 +403,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  noreviewTxt: { fontFamily: "Poppins_400Regular" },
+  noreviewTxt: { fontWeight:400, },
   loginBtnText: {
-    fontFamily: "Poppins_500Medium",
+    fontWeight:500,
     fontSize: 16,
     color: "#333",
   },
@@ -447,12 +443,12 @@ const styles = StyleSheet.create({
   reviewInput: {
     borderWidth: 1,
     borderColor: "#ddd",
-    borderRadius: 5,
+    borderRadius: 10,
     padding: 10,
     minHeight: 80,
     fontSize: 14,
-    fontFamily: "Poppins_400Regular",
-    backgroundColor: "#fff",
+    fontWeight:400,
+    backgroundColor: "#f8ffe6",
     color: "#333",
   },
 });

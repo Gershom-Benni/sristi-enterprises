@@ -3,12 +3,7 @@ import { View, Text, Pressable, StyleSheet, TextInput, FlatList } from "react-na
 import { Ionicons } from "@expo/vector-icons";
 import { useProductStore } from "../../store/useProductStore";
 import { useEffect, useState } from "react";
-import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-  useFonts,
-} from "@expo-google-fonts/poppins";
+
 export default function TabsLayout() {
   const router = useRouter();
   const pathname = usePathname();
@@ -39,11 +34,6 @@ export default function TabsLayout() {
 
   const activeColor = "#4CAF50";
   const inactiveColor = "#333";
-  useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_700Bold,
-  });
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -237,11 +227,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth:1,
     borderColor:'#fed044ff',
-    padding:10,
+    paddingTop:6,
+    paddingBottom:6,
+    paddingRight:10,
+    height:45,
     fontSize:13,
     width: "100%",
-    fontFamily:'Poppins_400Regular',
     paddingLeft:10,
+    fontWeight:400
   },
   suggestionBox: {
     position: "absolute",
@@ -269,13 +262,11 @@ const styles = StyleSheet.create({
     color: "#333",
     fontSize: 14,
     flex: 1,
-    fontFamily:'Poppins_400Regular'
   },
   suggestionPrice: {
     color: "#4CAF50",
     fontSize: 13,
     fontWeight: "600",
-    fontFamily:'Poppins_400Regular'
   },
   content: { 
     flex: 1 
@@ -305,7 +296,6 @@ tab: {
     fontSize: 11, 
     color: "#333", 
     marginTop: 3 ,
-    fontFamily:'Poppins_400Regular'
     
   },
   activeTabText: { 

@@ -10,12 +10,7 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
-import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-  useFonts,
-} from "@expo-google-fonts/poppins";
+
 import { useUserStore } from "../../store/useUserStore";
 import { useProductStore } from "../../store/useProductStore";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -26,11 +21,7 @@ export default function OrderSummary() {
   const { products } = useProductStore();
   const router = useRouter();
   const { from } = useLocalSearchParams();
-  useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_700Bold,
-  });
+  
 
   const [address, setAddress] = useState(user?.address || "");
   const [phone, setPhone] = useState(user?.phoneNumber || "");
@@ -179,36 +170,33 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: "#f8ffe6ff" },
   heading: {
     fontSize: 22,
-    fontWeight: "700",
+    fontWeight: 700,
     marginBottom: 12,
-    fontFamily: "Poppins_700Bold",
     color: "#333",
   },
   tableHeader: { flexDirection: "row", borderBottomWidth: 1, paddingBottom: 4 },
-  headerCell: { flex: 1, fontWeight: "bold", fontFamily: "Poppins_500Medium" },
+  headerCell: { flex: 1, fontWeight: 700, },
   row: {
     flexDirection: "row",
     paddingVertical: 6,
     borderBottomWidth: 0.5,
-    fontFamily: "Poppins_400Regular",
   },
-  cell: { flex: 1, fontFamily: "Poppins_400Regular", fontSize: 13 },
+  cell: { flex: 1,  fontSize: 13 },
   total: {
     fontSize: 20,
-    fontWeight: "700",
+    fontWeight: 700,
     marginVertical: 10,
-    fontFamily: "Poppins_700Bold",
   },
-  label: { marginTop: 10, fontWeight: "600", fontFamily: "Poppins_400Regular" },
+  label: { marginTop: 10, fontWeight: 600 },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
+    borderRadius:10,
     paddingTop: 6,
-    paddingBottom: 4,
+    paddingBottom: 6,
     paddingLeft: 6,
     paddingRight: 6,
     marginTop: 4,
-    fontFamily: "Poppins_400Regular",
     fontSize: 13,
     backgroundColor: "#e4e3bbff",
     height: "auto",
@@ -234,6 +222,5 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
-    fontFamily: "Poppins_700Bold",
   },
 });

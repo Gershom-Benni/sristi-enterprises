@@ -6,12 +6,7 @@ import { db } from "../../firebase/config";
 import { MotiView } from "moti";
 import { Feather } from "@expo/vector-icons";
 import { useUserStore } from "../../store/useUserStore";
-import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-  useFonts,
-} from "@expo-google-fonts/poppins";
+
 
 const PRIMARY_COLOR = "#34C759";
 const SUCCESS_COLOR = "#34C759"; 
@@ -32,11 +27,7 @@ export default function OrderDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [order, setOrder] = useState<any>(null);
   const { user } = useUserStore();
-    useFonts({
-      Poppins_400Regular,
-      Poppins_500Medium,
-      Poppins_700Bold,
-    });
+    
   useEffect(() => {
     const loadOrder = async () => {
       const orderSnap = await getDoc(doc(db, "orders", id));
@@ -86,10 +77,10 @@ export default function OrderDetail() {
   <Text
     style={{
       fontSize: 18,
-      fontFamily: "Poppins_700Bold",
       color: PRIMARY_COLOR,
       marginBottom: 10,
       textAlign: "center",
+      fontWeight:700
     }}
   >
     Order ID: {order.id.substring(0, 8).toUpperCase()}
@@ -100,12 +91,9 @@ export default function OrderDetail() {
       key={index}
       style={{
         marginBottom: 15,
-        backgroundColor: "#fff",
+        backgroundColor: "#f8ffe6ff",
         borderRadius: 12,
         padding: 10,
-        shadowColor: "#000",
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
       }}
     >
       <Image
@@ -125,9 +113,9 @@ export default function OrderDetail() {
       <Text
         style={{
           fontSize: 18,
-          fontFamily: "Poppins_700Bold",
           color: TEXT_COLOR_DARK,
           marginTop: 10,
+          fontWeight:700
         }}
       >
         {product?.name || "Unnamed Product"}
@@ -135,7 +123,7 @@ export default function OrderDetail() {
       <Text
         style={{
           fontSize: 15,
-          fontFamily: "Poppins_500Medium",
+           fontWeight:500,
           color: TEXT_COLOR_MEDIUM,
           marginTop: 4,
         }}
@@ -145,7 +133,7 @@ export default function OrderDetail() {
       <Text
         style={{
           fontSize: 15,
-          fontFamily: "Poppins_500Medium",
+           fontWeight:500,
           color: TEXT_COLOR_MEDIUM,
         }}
       >
@@ -164,7 +152,7 @@ export default function OrderDetail() {
         marginBottom: 25,
         
       }}>
-        <Text style={{ fontWeight: "700", fontSize: 20, marginBottom: 5, fontFamily: "Poppins_700Bold", color: PRIMARY_COLOR }}>
+        <Text style={{ fontWeight: 700, fontSize: 20, marginBottom: 5, color: PRIMARY_COLOR }}>
           Order Status
         </Text>
         {stages.map((stage, i) => {
@@ -197,7 +185,6 @@ export default function OrderDetail() {
                 <Text style={{
                   fontWeight: isCurrent ? "700" : "500",
                   fontSize: 16,
-                  fontFamily: isCurrent ? "Poppins_700Bold" : "Poppins_500Medium",
                   color: isDone ? TEXT_COLOR_DARK : TEXT_COLOR_MEDIUM,
                 }}>
                   {stage.label}
@@ -232,10 +219,10 @@ export default function OrderDetail() {
         padding: 20,
         marginBottom: 20,
       }}>
-        <Text style={{ fontWeight: "700", fontSize: 18, marginBottom: 10, fontFamily: "Poppins_700Bold", color: PRIMARY_COLOR }}>
+        <Text style={{ fontWeight: 700, fontSize: 18, marginBottom: 10, color: PRIMARY_COLOR }}>
         Delivery Address
         </Text>
-        <Text style={{ color: TEXT_COLOR_DARK, fontSize: 15, lineHeight: 22, fontFamily: "Poppins_400Regular", }}>
+        <Text style={{ color: TEXT_COLOR_DARK, fontSize: 15, lineHeight: 22,  }}>
           {user?.address || "No delivery address provided in user data."}
         </Text>
       </View>

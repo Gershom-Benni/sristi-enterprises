@@ -11,23 +11,13 @@ import { useUserStore } from "@/store/useUserStore";
 import { useProductStore } from "@/store/useProductStore";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  useFonts,
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-} from "@expo-google-fonts/poppins";
+
 
 export default function Wishlist() {
   const { user, toggleWishlist } = useUserStore();
   const { products, fetchProducts } = useProductStore();
   const [wishlistProducts, setWishlistProducts] = useState<any[]>([]);
   const router = useRouter();
-  useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_700Bold,
-  });
 
   useEffect(() => {
     if (!products.length) fetchProducts?.();
@@ -127,13 +117,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   name: {
-    fontFamily: "Poppins_700Bold",
     fontSize: 15,
     color: "#333",
-    fontWeight: "600"
+    fontWeight: 600
   },
   price: {
-    fontFamily: "Poppins_500Medium",
+    fontWeight: 500,
     fontSize: 14,
     color: "#4CAF50",
     marginTop: 2,
@@ -145,9 +134,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8ffe6"
   },
   msg: {
-    fontFamily: "Poppins_500Medium",
     fontSize: 18,
     color: "#666",
     marginTop: 10,
+    fontWeight: 500,
   },
 });

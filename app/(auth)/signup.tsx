@@ -1,9 +1,4 @@
-import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-  useFonts,
-} from "@expo-google-fonts/poppins";
+
 import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
 import { MotiView } from "moti";
@@ -25,9 +20,6 @@ import {
 } from "react-native";
 import { Easing } from "react-native-reanimated";
 import { useUserStore } from "@/store/useUserStore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../../firebase/config";
 
 
 
@@ -53,11 +45,7 @@ const ButtonClickAnimation = ({
 };
 
 export default function Signup() {
-  const [fontsLoaded] = useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_700Bold,
-  });
+  
   const { signUp } = useUserStore();
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -65,7 +53,6 @@ export default function Signup() {
   const [retype, setRetype] = useState("");
   const [loading, setLoading] = useState(false);
 
-  if (!fontsLoaded) return null;
   const handleSignup = async () => {
     if (!email || !password || !retype) {
       Alert.alert("Error", "Please fill all fields.");
@@ -192,15 +179,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   signupbtnText: {
-    fontFamily: "Poppins_700Bold",
-    fontSize: 15,
+    fontSize: 16,
     color: "#333333",
+    fontWeight:700
   },
   signupTxt: {
-    fontFamily: "Poppins_700Bold",
     color: "#333333",
     fontSize: 25,
     marginBottom: 20,
+    fontWeight:700
   },
   input: {
     width: 300,

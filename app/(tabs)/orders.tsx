@@ -4,23 +4,13 @@ import { useRouter } from "expo-router";
 import { useUserStore } from "../../store/useUserStore";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase/config";
-import {
-  useFonts,
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-} from "@expo-google-fonts/poppins";
 
 export default function OrdersPage() {
   const [selectedTab, setSelectedTab] = useState<"pending" | "completed">("pending");
   const [orders, setOrders] = useState<any[]>([]);
   const { user } = useUserStore();
   const router = useRouter();
-useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_700Bold,
-  });
+
   useEffect(() => {
     const fetchOrders = async () => {
       if (!user?.orders) return;
@@ -131,7 +121,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   activeTab: { backgroundColor: "#4CAF50" },
-  tabText: { fontSize: 14, color: "#333",fontFamily: "Poppins_500Medium" },
+  tabText: { fontSize: 14, color: "#333", fontWeight:500},
   activeTabText: { color: "#fff", fontWeight: "600" },
   card: {
     flexDirection: "row",
@@ -143,6 +133,6 @@ const styles = StyleSheet.create({
   },
   image: { width: 60, height: 60, borderRadius: 10 },
   info: { marginLeft: 10, justifyContent: "center" },
-  name: { fontSize: 14, fontWeight: "500",fontFamily: "Poppins_500Medium" },
-  status: { fontSize: 12, color: "gray",fontFamily: "Poppins_400Regular" },
+  name: { fontSize: 14, fontWeight: 500 },
+  status: { fontSize: 12, color: "gray",},
 });

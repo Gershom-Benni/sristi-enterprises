@@ -9,21 +9,11 @@ import {
 import { useProductStore } from "../../store/useProductStore";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-  useFonts,
-} from "@expo-google-fonts/poppins";
+
 export default function SearchResults() {
   const { filteredProducts } = useProductStore();
   const products = filteredProducts();
   const router = useRouter();
-  useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_700Bold,
-  });
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Search Results</Text>
@@ -75,7 +65,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginVertical: 10,
     textAlign: "center",
-    fontFamily: "Poppins_700Bold",
     color: "#333"
   },
   card: {
@@ -86,8 +75,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   image: { width: "100%", height: 120, borderRadius: 8 },
-  name: { fontSize: 14, fontWeight: "500", marginTop: 6,fontFamily: "Poppins_500Medium",color: "#333" },
-  price: { fontSize: 13, color: "#4CAF50" ,fontFamily: "Poppins_500Medium",letterSpacing:1,marginTop:6},
+  name: { fontSize: 14, fontWeight: 500, marginTop: 6,color: "#333" },
+  price: { fontSize: 13, color: "#4CAF50" ,letterSpacing:1,marginTop:6,fontWeight: 500,},
   rating: { flexDirection: "row", marginTop: 5 },
-  ratingTxt: { fontFamily: "Poppins_400Regular", fontSize: 12, marginLeft: 6 },
+  ratingTxt: {  fontSize: 12, marginLeft: 6 },
 });

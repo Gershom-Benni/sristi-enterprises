@@ -1,12 +1,5 @@
-import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-  useFonts,
-} from "@expo-google-fonts/poppins";
 import { Image } from "expo-image";
 import { Link, useRouter } from "expo-router";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { MotiView } from "moti";
 import { useState } from "react";
 import {
@@ -53,12 +46,6 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const {signIn} = useUserStore();
-  const [fontsLoaded] = useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_700Bold,
-  });
-  if (!fontsLoaded) return null;
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -161,15 +148,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   loginBtnText: {
-    fontFamily: "Poppins_700Bold",
     fontSize: 15,
     color: "#333333",
+    fontWeight:700
   },
   loginTxt: {
-    fontFamily: "Poppins_700Bold",
     color: "#333333",
-    fontSize: 25,
+    fontSize: 26,
     marginBottom: 20,
+    fontWeight:700
   },
   input: {
     width: 300,

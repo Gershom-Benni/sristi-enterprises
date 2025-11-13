@@ -9,23 +9,12 @@ import {
 } from "react-native";
 import { useUserStore } from "../../store/useUserStore";
 import { useProductStore } from "../../store/useProductStore";
-import {
-  useFonts,
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-} from "@expo-google-fonts/poppins";
 import { useRouter } from "expo-router";
 export default function CartPage() {
   const router = useRouter();
   const { user, removeFromCart, updateCartQty } = useUserStore();
   const { products } = useProductStore();
 
-  useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_700Bold,
-  });
 
   if (!user?.cart?.length) {
     return (
@@ -150,7 +139,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f8ffe6",
   },
-  emptyText: { fontSize: 18, color: "#666", fontFamily: "Poppins_500Medium" },
+  emptyText: { fontSize: 18, color: "#666", fontWeight:500 },
   card: {
     backgroundColor: "#e4e3bbff",
     padding: 16,
@@ -164,10 +153,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  name: { fontSize: 16, fontFamily: "Poppins_700Bold", fontWeight: "600" },
+  name: { fontSize: 16, fontWeight: "bold" },
   price: {
     color: "#4CAF50",
-    fontFamily: "Poppins_500Medium",
+    fontWeight:500,
     marginVertical: 4,
     fontSize:14
   },
@@ -189,12 +178,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     
   },
-  removeText: { color: "white", fontFamily: "Poppins_500Medium",fontSize:13 },
+  removeText: { color: "white",fontSize:13, fontWeight:500 },
   totalContainer: {
     backgroundColor: "#e4e3bbff",
     paddingTop: 6,
     paddingHorizontal: 10,
-    paddingBottom: 3,
+    paddingBottom: 6,
     borderRadius: 10,
     marginTop: 10,
     marginBottom: 3,
@@ -204,12 +193,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   totalText: {
-    fontFamily: "Poppins_400Regular",
     fontSize: 14,
     color: "#333",
   },
   totalAmount: {
-    fontFamily: "Poppins_400Regular",
     color: "#4CAF50",
     fontSize: 14,
   },
@@ -220,5 +207,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
   },
-  buyText: { color: "#333", fontSize: 16, fontFamily: "Poppins_500Medium"},
+  buyText: { color: "#333", fontSize: 16, fontWeight:500},
 });

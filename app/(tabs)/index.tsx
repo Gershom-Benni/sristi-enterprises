@@ -1,10 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Poppins_400Regular,
-  Poppins_500Medium,
-  Poppins_700Bold,
-  useFonts,
-} from "@expo-google-fonts/poppins";
+
 import {
   View,
   Text,
@@ -32,11 +27,7 @@ export default function HomePage() {
   const { fetchProducts, products } = useProductStore();
   const [index, setIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
-  useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
-    Poppins_700Bold,
-  });
+  
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -103,9 +94,8 @@ const styles = StyleSheet.create({
   carouselContainer: { width: "100%", height: 200 },
   carouselImage: { width: width, height: 200, resizeMode: "cover" },
   sectionTitle: {
-    fontSize: 25,
-    fontFamily: "Poppins_700Bold",
-    fontWeight: "600",
+    fontSize: 28,
+    fontWeight: "700",
     paddingHorizontal: 16,
     marginVertical: 12,
     color: "#333",
@@ -131,19 +121,17 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   productName: {
-    fontSize: 14,
+    fontSize: 14.5,
     fontWeight: "500",
-    fontFamily: "Poppins_500Medium",
     color: "#333",
-    marginTop: 6,
+    marginTop: 7,
   },
   productPrice: {
     fontSize: 14,
     fontWeight: "bold",
     color: "#4CAF50",
-    marginTop: 2,
-    fontFamily: "Poppins_400Regular",
+    marginTop: 10,
   },
-  rating: { flexDirection: "row", marginTop: 4 },
-  ratingTxt: { fontFamily: "Poppins_400Regular", fontSize: 12, marginRight: 5 },
+  rating: { flexDirection: "row", marginTop: 10 },
+  ratingTxt: {  fontSize: 12, marginRight: 5 },
 });
