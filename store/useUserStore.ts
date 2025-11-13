@@ -42,7 +42,6 @@ type UserData = {
   orders?: string[];
   address?: string;
   phoneNumber?: string;
-  userName?: string;
 };
 
 type UserStore = {
@@ -76,13 +75,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
     });
   },
 
-  signUp: async (email, password, username) => {
+  signUp: async (email, password) => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     const uid = cred.user.uid;
     const userDoc = {
       id: uid,
       email,
-      username: username || "",
       createdAt: serverTimestamp(),
       profilePic: "",
       cart: [],

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   FlatList,
   Dimensions,
   Alert,
+  TextInput,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
@@ -100,41 +101,50 @@ export default function ProductPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loadingReviews, setLoadingReviews] = useState(true);
   const [index, setIndex] = useState(0);
-  const { products, getReviewsByProductId } = useProductStore();
-  const { user, toggleWishlist } = useUserStore();
+  const { products, getReviewsByProductId, addReview } = useProductStore();
+  const { user, toggleWishlist, addToCart } = useUserStore();
   const flatListRef = useRef<FlatList>(null);
   const product = products.find((p) => p.id === id);
   const isWishlisted = user?.wishlist?.includes(product?.id || "") ?? false;
-  const { addToCart } = useUserStore();
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [hasReviewed, setHasReviewed] = useState(false);
+
   useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_700Bold,
   });
-   const handleAddToCart = async () => {
-  if (!product?.id) {
-    Alert.alert("Error", "Product not found!");
-    return;
-  }
 
-  try {
-    await addToCart(product.id);
-    Alert.alert("Success", "Added to Cart!");
-  } catch (error) {
-    Alert.alert("Error", (error as Error).message);
-  }
-};
+  const handleAddToCart = async () => {
+    if (!product?.id) {
+      Alert.alert("Error", "Product not found!");
+      return;
+    }
 
+    try {
+      await addToCart(product.id);
+      Alert.alert("Success", "Added to Cart!");
+    } catch (error) {
+      Alert.alert("Error", (error as Error).message);
+    }
+  };
+
+  const fetchReviews = useCallback(async () => {
+    if (!id) return;
+    const res = await getReviewsByProductId(id);
+    setReviews(res);
+    setLoadingReviews(false);
+    if (user) {
+      const userHasReviewed = res.some((review) => review.userId === user.id);
+      setHasReviewed(userHasReviewed);
+    }
+  }, [id, getReviewsByProductId, user]);
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      if (!id) return;
-      const res = await getReviewsByProductId(id);
-      setReviews(res);
-      setLoadingReviews(false);
-    };
     fetchReviews();
-  }, [id]);
+  }, [fetchReviews]);
+
   useEffect(() => {
     if (!product?.images?.length) return;
     const timer = setInterval(() => {
@@ -152,6 +162,35 @@ export default function ProductPage() {
       </View>
     );
   }
+
+  const handleSubmitReview = async () => {
+    if (!user)
+      return Alert.alert("Login required", "You must be logged in to review.");
+    if (hasReviewed)
+      return Alert.alert(
+        "Already reviewed",
+        "You have already reviewed this product."
+      );
+    if (rating === 0)
+      return Alert.alert("Rating required", "Please select a rating.");
+    if (!comment.trim())
+      return Alert.alert("Comment required", "Please write a review.");
+
+    try {
+      await addReview(product.id, {
+        userId: user.id,
+        username: user.username || "Anonymous",
+        comment,
+        rating,
+      });
+      setComment("");
+      setRating(0);
+      Alert.alert("Success", "Review added!");
+      await fetchReviews();
+    } catch (error) {
+      Alert.alert("Error", (error as Error).message);
+    }
+  };
 
   return (
     <FlatList
@@ -209,7 +248,9 @@ export default function ProductPage() {
                     style={styles.star}
                   />
                 ))}
-                <Text style={styles.rating}>{product.rating ?? "N/A"}</Text>
+                <Text style={styles.rating}>
+                  {product.rating ? product.rating.toFixed(1) : "N/A"}
+                </Text>
               </View>
 
               <View>
@@ -225,19 +266,18 @@ export default function ProductPage() {
           </View>
 
           <Pressable
-  style={({ pressed }) => ButtonClickAnimation({ pressed })}
-  onPress={() => router.push(`/orderSummary?from=product-${product.id}`)}
->
-  <Text style={styles.loginBtnText}>Buy</Text>
-</Pressable>
+            style={({ pressed }) => ButtonClickAnimation({ pressed })}
+            onPress={() => router.push(`/orderSummary?from=product-${product.id}`)}
+          >
+            <Text style={styles.loginBtnText}>Buy</Text>
+          </Pressable>
 
           <Pressable
-  onPress={handleAddToCart}
-  style={({ pressed }) => LoginButtonClickAnimation({ pressed })}
->
-  <Text style={styles.loginBtnText}>Add to Cart</Text>
-</Pressable>
-
+            onPress={handleAddToCart}
+            style={({ pressed }) => LoginButtonClickAnimation({ pressed })}
+          >
+            <Text style={styles.loginBtnText}>Add to Cart</Text>
+          </Pressable>
 
           <Text style={styles.heading}>Description</Text>
           <Text style={styles.desc}>
@@ -272,6 +312,37 @@ export default function ProductPage() {
                 <Text style={styles.comment}>{item.comment}</Text>
               </View>
             ))
+          )}
+          {!hasReviewed && user && (
+            <View style={styles.reviewInputBox}>
+              <Text style={styles.heading}>Add Your Review</Text>
+              <View style={{ flexDirection: "row", marginVertical: 10 }}>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Pressable key={i} onPress={() => setRating(i)}>
+                    <Ionicons
+                      name={i <= rating ? "star" : "star-outline"}
+                      size={24}
+                      color="#f5c518"
+                      style={{ marginHorizontal: 3 }}
+                    />
+                  </Pressable>
+                ))}
+              </View>
+              <TextInput
+                placeholder="Write your review..."
+                placeholderTextColor="#666"
+                style={styles.reviewInput}
+                multiline
+                value={comment}
+                onChangeText={setComment}
+              />
+              <Pressable
+                style={({ pressed }) => ButtonClickAnimation({ pressed })}
+                onPress={handleSubmitReview}
+              >
+                <Text style={styles.loginBtnText}>Submit Review</Text>
+              </Pressable>
+            </View>
           )}
         </View>
       )}
@@ -366,5 +437,22 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "green",
     marginHorizontal: 4,
+  },
+  reviewInputBox: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#e4e3bb",
+    borderRadius: 8,
+  },
+  reviewInput: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
+    padding: 10,
+    minHeight: 80,
+    fontSize: 14,
+    fontFamily: "Poppins_400Regular",
+    backgroundColor: "#fff",
+    color: "#333",
   },
 });

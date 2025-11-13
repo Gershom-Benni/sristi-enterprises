@@ -45,7 +45,7 @@ type ProductStore = {
   getReviewsByProductId: (productId: string) => Promise<Review[]>;
   addReview: (
     productId: string,
-    review: Omit<Review, "id" | "createdAt">
+    review: Omit<Review, "id" | "createdAt" | "productId">
   ) => Promise<void>;
 };
 
@@ -89,9 +89,9 @@ export const useProductStore = create<ProductStore>((set, get) => ({
     })) as Review[];
   },
 
-  addReview: async (productId, review) => {
+  addReview: async (productId:string, review:object) => {
     const reviewsCol = collection(db, "products", productId, "reviews");
-    await addDoc(reviewsCol, { ...review, createdAt: serverTimestamp() });
+    await addDoc(reviewsCol, { ...review, createdAt: serverTimestamp()});
   },
 
   setSearchQuery: (text) => set({ searchQuery: text }),

@@ -75,41 +75,86 @@ export default function OrderDetail() {
         flexGrow: 1,
       }}
     >
-      <View style={{
-        backgroundColor: CARD_COLOR,
-        borderRadius: 16,
-        padding: 15,
-        marginBottom: 25,
-        
-      }}>
-        <Image
-          source={{
-            uri:
-              product?.images?.[0] ||
-              product?.image ||
-              "https://via.placeholder.com/150",
-          }}
-          style={{ width: '100%', height: 200, borderRadius: 12, resizeMode: 'cover' }}
-        />
-        <Text style={{
-          fontSize: 22,
+      <View
+  style={{
+    backgroundColor: CARD_COLOR,
+    borderRadius: 16,
+    padding: 15,
+    marginBottom: 25,
+  }}
+>
+  <Text
+    style={{
+      fontSize: 18,
+      fontFamily: "Poppins_700Bold",
+      color: PRIMARY_COLOR,
+      marginBottom: 10,
+      textAlign: "center",
+    }}
+  >
+    Order ID: {order.id.substring(0, 8).toUpperCase()}
+  </Text>
+
+  {order.items.map((product: any, index: number) => (
+    <View
+      key={index}
+      style={{
+        marginBottom: 15,
+        backgroundColor: "#fff",
+        borderRadius: 12,
+        padding: 10,
+        shadowColor: "#000",
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+      }}
+    >
+      <Image
+        source={{
+          uri:
+            product?.images?.[0] ||
+            product?.image ||
+            "https://via.placeholder.com/150",
+        }}
+        style={{
+          width: "100%",
+          height: 160,
+          borderRadius: 10,
+          resizeMode: "cover",
+        }}
+      />
+      <Text
+        style={{
+          fontSize: 18,
+          fontFamily: "Poppins_700Bold",
           color: TEXT_COLOR_DARK,
-          marginTop: 15,
-          fontFamily: "Poppins_700Bold", 
-          textAlign: 'center',
-        }}>
-          {product?.name || "Product Name"}
-        </Text>
-        <Text style={{
-            fontSize: 14,
-            color: TEXT_COLOR_MEDIUM,
-            fontFamily: "Poppins_500Medium",
-            textAlign: 'center',
-            marginTop: 4,
-        }}>
-            Order ID: {order.id.substring(0, 8).toUpperCase()}
-        </Text>
-      </View>
+          marginTop: 10,
+        }}
+      >
+        {product?.name || "Unnamed Product"}
+      </Text>
+      <Text
+        style={{
+          fontSize: 15,
+          fontFamily: "Poppins_500Medium",
+          color: TEXT_COLOR_MEDIUM,
+          marginTop: 4,
+        }}
+      >
+        Quantity: {product.qty}
+      </Text>
+      <Text
+        style={{
+          fontSize: 15,
+          fontFamily: "Poppins_500Medium",
+          color: TEXT_COLOR_MEDIUM,
+        }}
+      >
+        Price: ₹{product.price || "—"}
+      </Text>
+    </View>
+  ))}
+</View>
+
 
       <View style={{
         backgroundColor: CARD_COLOR,
