@@ -27,7 +27,7 @@ export type Order = {
   items: CartItem[];
   totalCost: number;
   status: string;
-  paymentMethod:string
+  paymentMethod: string;
   createdAt?: any;
 };
 
@@ -41,7 +41,8 @@ type UserData = {
   wishlist?: string[];
   orders?: string[];
   address?: string;
-  phoneNumber?: string; 
+  phoneNumber?: string;
+  userName?: string;
 };
 
 type UserStore = {
@@ -56,8 +57,9 @@ type UserStore = {
   removeFromCart: (productId: string) => Promise<void>;
   updateCartQty: (productId: string, qty: number) => Promise<void>;
   toggleWishlist: (productId: string) => Promise<void>;
-  placeOrder: (items: CartItem[], totalCost: number, paymentMethod:string) => Promise<void>;
-  updateContactInfo: (address?: string, phoneNumber?: string) => Promise<void>; 
+  placeOrder: (items: CartItem[], totalCost: number, paymentMethod: string) => Promise<void>;
+  updateContactInfo: (address?: string, phoneNumber?: string) => Promise<void>;
+  updateUserName: (updatedName: string) => Promise<void>;
 };
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -87,7 +89,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       wishlist: [],
       orders: [],
       address: "",
-      phoneNumber: "", 
+      phoneNumber: "",
     };
     await setDoc(doc(db, "users", uid), userDoc);
     set({ user: { ...userDoc, createdAt: new Date() }, loading: false });
@@ -183,9 +185,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
     try {
       await updateDoc(docRef, {
-        wishlist: isInWishlist
-          ? arrayRemove(productId)
-          : arrayUnion(productId),
+        wishlist: isInWishlist ? arrayRemove(productId) : arrayUnion(productId),
       });
 
       set({
@@ -201,7 +201,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 
-  placeOrder: async (items:any, totalCost:any, paymentMethod:string) => {
+  placeOrder: async (items, totalCost, paymentMethod) => {
     const user = get().user;
     if (!user) throw new Error("Not signed in");
     const order = {
@@ -231,5 +231,16 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
     await updateDoc(docRef, updateData);
     set({ user: { ...user, ...updateData } });
+  },
+
+  updateUserName: async (updatedName: string) => {
+    const user = get().user;
+    if (!user) throw new Error("Not signed in");
+
+    const uid = user.id;
+    const docRef = doc(db, "users", uid);
+
+    await updateDoc(docRef, { username: updatedName });
+    set({ user: { ...user, username: updatedName } });
   },
 }));

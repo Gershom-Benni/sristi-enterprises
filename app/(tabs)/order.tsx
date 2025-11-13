@@ -80,11 +80,7 @@ export default function OrderDetail() {
         borderRadius: 16,
         padding: 15,
         marginBottom: 25,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 3,
+        
       }}>
         <Image
           source={{
@@ -121,11 +117,7 @@ export default function OrderDetail() {
         paddingHorizontal: 20,
         paddingVertical: 15,
         marginBottom: 25,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 3,
+        
       }}>
         <Text style={{ fontWeight: "700", fontSize: 20, marginBottom: 5, fontFamily: "Poppins_700Bold", color: PRIMARY_COLOR }}>
           Order Status
@@ -194,11 +186,6 @@ export default function OrderDetail() {
         borderRadius: 16,
         padding: 20,
         marginBottom: 20,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-        elevation: 3,
       }}>
         <Text style={{ fontWeight: "700", fontSize: 18, marginBottom: 10, fontFamily: "Poppins_700Bold", color: PRIMARY_COLOR }}>
         Delivery Address
