@@ -4,14 +4,9 @@ import { useAuth } from "../hooks/useAuth";
 import { View, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import { MotiView } from "moti";
-import React, { useEffect } from "react";
-import { useUserStore } from "../store/useUserStore";
+import React from "react";
 export default function RootLayout() {
   const { user, isLoading } = useAuth();
-  const initAuthListener = useUserStore((s) => s.initAuthListener);
-  useEffect(() => {
-    initAuthListener();
-  }, []);
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
