@@ -49,10 +49,10 @@ export default function Signup() {
   const { signUp } = useUserStore();
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
   const [retype, setRetype] = useState("");
   const [loading, setLoading] = useState(false);
-
   const handleSignup = async () => {
     if (!email || !password || !retype) {
       Alert.alert("Error", "Please fill all fields.");
@@ -65,15 +65,16 @@ export default function Signup() {
 
     try {
       setLoading(true);
-      await signUp(email, password);
+      await signUp(email, password, username);
 
       setEmail("");
       setPassword("");
       setRetype("");
+      setusername("");
       setLoading(false);
       Alert.alert(
-      "Success",
       "Account created successfully!",
+      "Verify your email in accounts tab before proceeding",
       [{ text: "OK", onPress: () => router.replace("/(tabs)") }]
     );
       
@@ -123,6 +124,14 @@ export default function Signup() {
           >
             <Text style={styles.signupTxt}>Sign Up</Text>
 
+            <TextInput
+              placeholder="User Name"
+              style={styles.input}
+              keyboardType="default"
+              autoCapitalize="none"
+              value={username}
+              onChangeText={setusername}
+            />
             <TextInput
               placeholder="Email"
               style={styles.input}

@@ -15,12 +15,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { useUserStore } from "../../store/useUserStore";
 import { useRouter } from "expo-router";
 export default function Account() {
-  const { user, updateContactInfo, updateUserName, signOutUser, loadUserDoc } = useUserStore();
+  const { user, updateContactInfo, updateUserName, signOutUser, loadUserDoc } =
+    useUserStore();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const email = user?.email;
   const router = useRouter();
   useEffect(() => {
     if (user) {
@@ -33,13 +35,19 @@ export default function Account() {
 
   const handleSave = async () => {
     if (!name.trim() && !phone.trim() && !address.trim()) {
-      Alert.alert("Empty Fields", "Please fill at least one field before saving.");
+      Alert.alert(
+        "Empty Fields",
+        "Please fill at least one field before saving."
+      );
       return;
     }
 
     const phoneRegex = /^[0-9]{10}$/;
     if (phone.trim() && !phoneRegex.test(phone.trim())) {
-      Alert.alert("Invalid Phone", "Please enter a valid 10-digit phone number.");
+      Alert.alert(
+        "Invalid Phone",
+        "Please enter a valid 10-digit phone number."
+      );
       return;
     }
 
@@ -58,9 +66,8 @@ export default function Account() {
   const handleSignOut = async () => {
     try {
       await signOutUser();
-      router.replace('/(auth)/login')
+      router.replace("/(auth)/login");
       Alert.alert("Signed Out", "You have been signed out successfully.");
-
     } catch (err) {
       console.log("Error signing out:", err);
     }
@@ -69,9 +76,15 @@ export default function Account() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>My Account</Text>
+        <View style={styles.myaccTxt}>
+          <Text style={styles.headerTitle}>My Account</Text>
+          <Text style={styles.email}>{email}</Text>
+        </View>
         {isSaved && (
-          <TouchableOpacity style={styles.headerEdit} onPress={() => setIsEditing(true)}>
+          <TouchableOpacity
+            style={styles.headerEdit}
+            onPress={() => setIsEditing(true)}
+          >
             <Ionicons name="create-outline" size={18} color="#1a1a1a" />
             <Text style={styles.headerEditText}>Edit</Text>
           </TouchableOpacity>
@@ -81,7 +94,7 @@ export default function Account() {
       <ScrollView contentContainerStyle={styles.main}>
         <View style={styles.card}>
           <View style={styles.field}>
-            <Text style={styles.label}>Full name</Text>
+            <Text style={styles.label}>User Name</Text>
             <TextInput
               placeholder="John Doe"
               style={[styles.input, !isEditing && styles.disabledInput]}
@@ -121,7 +134,10 @@ export default function Account() {
                 <Text style={styles.primaryText}>Save</Text>
               </Pressable>
 
-              <Pressable style={styles.ghostButton} onPress={() => setIsEditing(false)}>
+              <Pressable
+                style={styles.ghostButton}
+                onPress={() => setIsEditing(false)}
+              >
                 <Text style={styles.ghostText}>Cancel</Text>
               </Pressable>
             </View>
@@ -135,7 +151,11 @@ export default function Account() {
 
         {isSaved && (
           <View style={styles.savedNote}>
-            <Ionicons name="checkmark-done-circle-outline" size={16} color="#155724" />
+            <Ionicons
+              name="checkmark-done-circle-outline"
+              size={16}
+              color="#155724"
+            />
             <Text style={styles.savedText}>Profile saved</Text>
           </View>
         )}
@@ -147,7 +167,10 @@ export default function Account() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Platform.select({ ios: 50, android: StatusBar.currentHeight || 24 }),
+    paddingTop: Platform.select({
+      ios: 50,
+      android: StatusBar.currentHeight || 24,
+    }),
     backgroundColor: "#f8ffe6ff",
   },
   header: {
@@ -168,7 +191,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#e4e3bbf5",
     paddingVertical: 6,
     paddingHorizontal: 10,
-    borderRadius: 8
+    borderRadius: 8,
   },
   headerEditText: { marginLeft: 6, fontWeight: "600" },
   main: { padding: 20, paddingBottom: 40 },
@@ -239,4 +262,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   savedText: { color: "#155724", fontWeight: "600" },
+  myaccTxt:{ display:'flex', flexDirection:'column'},
+  email:{ color:'#333', fontSize:15, marginTop:10 }
 });

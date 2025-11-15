@@ -48,7 +48,7 @@ type UserStore = {
   user: UserData | null;
   loading: boolean;
   initAuthListener: () => void;
-  signUp: (email: string, password: string, username?: string) => Promise<void>;
+  signUp: ( email: string, password: string, username?: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOutUser: () => Promise<void>;
   loadUserDoc: (uid: string) => Promise<void>;
@@ -75,12 +75,13 @@ export const useUserStore = create<UserStore>((set, get) => ({
     });
   },
 
-  signUp: async (email, password) => {
+  signUp: async (email, password,username) => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     const uid = cred.user.uid;
     const userDoc = {
       id: uid,
       email,
+      username:username,
       createdAt: serverTimestamp(),
       profilePic: "",
       cart: [],
