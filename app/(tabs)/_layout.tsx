@@ -1,5 +1,12 @@
 import { Stack, useRouter, usePathname } from "expo-router";
-import { View, Text, Pressable, StyleSheet, TextInput, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  FlatList,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useProductStore } from "../../store/useProductStore";
 import { useEffect, useState } from "react";
@@ -7,14 +14,16 @@ import { useEffect, useState } from "react";
 export default function TabsLayout() {
   const router = useRouter();
   const pathname = usePathname();
-  const { searchQuery, setSearchQuery, filteredProducts, fetchProducts } = useProductStore();
+  const { searchQuery, setSearchQuery, filteredProducts, fetchProducts } =
+    useProductStore();
   const [isFocused, setIsFocused] = useState(false);
-  
+
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  const suggestions = searchQuery.trim() && isFocused ? filteredProducts().slice(0, 5) : [];
+  const suggestions =
+    searchQuery.trim() && isFocused ? filteredProducts().slice(0, 5) : [];
 
   const isPathActive = (tabPath: string) => {
     if (tabPath === "/(tabs)") {
@@ -40,7 +49,7 @@ export default function TabsLayout() {
         <Pressable onPress={() => router.push("/(tabs)")}>
           <Ionicons name="home-outline" size={24} color={inactiveColor} />
         </Pressable>
-        
+
         <View style={styles.searchContainer}>
           <TextInput
             placeholder="Search..."
@@ -51,7 +60,6 @@ export default function TabsLayout() {
             onSubmitEditing={() => {
               setIsFocused(false);
               router.push("/(tabs)/searchResults");
-
             }}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 200)}
@@ -174,25 +182,27 @@ export default function TabsLayout() {
         </Pressable>
 
         <Pressable
-          onPress={() => router.push("/(tabs)/settings")}
+          onPress={() => router.push("/(tabs)/account")}
           style={styles.tab}
         >
           <Ionicons
             name={
-              isPathActive("/(tabs)/settings") ? "settings" : "settings-outline"
+              isPathActive("/(tabs)/account")
+                ? "person-circle"
+                : "person-circle-outline"
             }
             size={22}
             color={
-              isPathActive("/(tabs)/settings") ? activeColor : inactiveColor
+              isPathActive("/(tabs)/account") ? activeColor : inactiveColor
             }
           />
           <Text
             style={[
               styles.tabText,
-              isPathActive("/(tabs)/settings") && styles.activeTabText,
+              isPathActive("/(tabs)/account") && styles.activeTabText,
             ]}
           >
-            Settings
+            Account
           </Text>
         </Pressable>
       </View>
@@ -201,9 +211,9 @@ export default function TabsLayout() {
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#fff" 
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
   },
   header: {
     flexDirection: "row",
@@ -225,16 +235,16 @@ const styles = StyleSheet.create({
   searchBar: {
     backgroundColor: "#e4e3bbff",
     borderRadius: 20,
-    borderWidth:1,
-    borderColor:'#fed044ff',
-    paddingTop:6,
-    paddingBottom:6,
-    paddingRight:10,
-    height:45,
-    fontSize:13,
+    borderWidth: 1,
+    borderColor: "#fed044ff",
+    paddingTop: 6,
+    paddingBottom: 6,
+    paddingRight: 10,
+    height: 45,
+    fontSize: 13,
     width: "100%",
-    paddingLeft:10,
-    fontWeight:400
+    paddingLeft: 10,
+    fontWeight: 400,
   },
   suggestionBox: {
     position: "absolute",
@@ -245,9 +255,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#ddd",
-    maxHeight: 'auto',
+    maxHeight: "auto",
     elevation: 2,
-    zIndex:1000
+    zIndex: 1000,
   },
   suggestionItem: {
     paddingVertical: 12,
@@ -268,38 +278,37 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
   },
-  content: { 
-    flex: 1 
+  content: {
+    flex: 1,
   },
   footer: {
-  flexDirection: "row",
-  justifyContent: "space-around",
-  alignItems: "center",
-  backgroundColor: "#f8ffe6",
-  borderTopWidth: 1,
-  borderTopColor: "#ddd",
-  paddingVertical: 5,
-  paddingBottom: 15,
-},
-
-tab: {
-  flex: 1,
-  alignItems: "center",
-  justifyContent: "center",
-  paddingVertical: 8,
-},
-
-  activeTab: { 
-    opacity: 0.8 
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "#f8ffe6",
+    borderTopWidth: 1,
+    borderTopColor: "#ddd",
+    paddingVertical: 5,
+    paddingBottom: 15,
   },
-  tabText: { 
-    fontSize: 11, 
-    color: "#333", 
-    marginTop: 3 ,
-    
+
+  tab: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 8,
   },
-  activeTabText: { 
-    color: "#4CAF50", 
-    fontWeight: "600" 
+
+  activeTab: {
+    opacity: 0.8,
+  },
+  tabText: {
+    fontSize: 11,
+    color: "#333",
+    marginTop: 3,
+  },
+  activeTabText: {
+    color: "#4CAF50",
+    fontWeight: "600",
   },
 });
