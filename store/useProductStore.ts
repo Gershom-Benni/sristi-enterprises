@@ -3,6 +3,8 @@ import { create } from "zustand";
 import {
   collection,
   getDocs,
+  updateDoc,
+  doc,
   query,
   orderBy,
   onSnapshot,
@@ -48,6 +50,11 @@ type ProductStore = {
     review: Omit<Review, "id" | "createdAt" | "productId">
   ) => Promise<void>;
 };
+function calculateAverageRating(reviews: Review[]) {
+  if (!reviews.length) return 0;
+  const total = reviews.reduce((sum, r) => sum + r.rating, 0);
+  return total / reviews.length;
+}
 
 export const useProductStore = create<ProductStore>((set, get) => ({
   products: [],
@@ -80,18 +87,28 @@ export const useProductStore = create<ProductStore>((set, get) => ({
   },
 
   getReviewsByProductId: async (productId) => {
-    const reviewsCol = collection(db, "products", productId, "reviews");
-    const q = query(reviewsCol, orderBy("createdAt", "desc"));
-    const snap = await getDocs(q);
-    return snap.docs.map((d) => ({
-      id: d.id,
-      ...(d.data() as DocumentData),
-    })) as Review[];
-  },
+  const reviewsCol = collection(db, "products", productId, "reviews");
+  const q = query(reviewsCol, orderBy("createdAt", "desc"));
+  const snap = await getDocs(q);
+
+  const reviews = snap.docs.map((d) => ({
+    id: d.id,
+    ...(d.data() as DocumentData),
+  })) as Review[];
+  const avgRating = calculateAverageRating(reviews);
+  await updateDoc(doc(db, "products", productId), {
+    rating: avgRating,
+  });
+
+  return reviews;
+},
+
 
   addReview: async (productId:string, review:object) => {
     const reviewsCol = collection(db, "products", productId, "reviews");
     await addDoc(reviewsCol, { ...review, createdAt: serverTimestamp()});
+    await get().getReviewsByProductId(productId);
+
   },
 
   setSearchQuery: (text) => set({ searchQuery: text }),

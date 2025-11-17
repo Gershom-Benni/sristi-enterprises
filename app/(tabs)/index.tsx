@@ -13,21 +13,19 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useProductStore } from "../../store/useProductStore";
+import { useBannerStore } from "@/store/useBannerStore";
 
 const { width } = Dimensions.get("window");
-
-const posters = [
-  { id: "1", image: "https://picsum.photos/800/300?random=1" },
-  { id: "2", image: "https://picsum.photos/800/300?random=2" },
-  { id: "3", image: "https://picsum.photos/800/300?random=3" },
-];
 
 export default function HomePage() {
   const router = useRouter();
   const { fetchProducts, products } = useProductStore();
   const [index, setIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
-  
+  const { posters, fetchPosters } = useBannerStore();
+  useEffect(() => {
+    fetchPosters();
+  }, []);
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -35,6 +33,7 @@ export default function HomePage() {
   const allProducts = products;
 
   useEffect(() => {
+    if (posters.length === 0) return;
     const timer = setInterval(() => {
       const nextIndex = (index + 1) % posters.length;
       setIndex(nextIndex);
@@ -53,9 +52,9 @@ export default function HomePage() {
           pagingEnabled
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => (
-            <Image source={{ uri: item.image }} style={styles.carouselImage} />
+            <Image source={{ uri: item }} style={styles.carouselImage} />
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, idx) => idx.toString()}
         />
       </View>
 
@@ -66,20 +65,31 @@ export default function HomePage() {
           <Pressable
             key={item.id}
             style={styles.card}
-            onPress={() => router.push({ pathname: "/product", params: { id: item.id } })}
+            onPress={() =>
+              router.push({ pathname: "/product", params: { id: item.id } })
+            }
           >
-            <Image source={{ uri: item.images[0] }} style={styles.productImage} />
+            <Image
+              source={{ uri: item.images[0] }}
+              style={styles.productImage}
+            />
             <Text style={styles.productName}>{item.name}</Text>
             <View style={styles.rating}>
               <Text style={styles.ratingTxt}>{item.rating}</Text>
-              {item.rating && [...Array(5)].map((_, i) => (
-                <Ionicons
-                  key={i}
-                  name={i < Math.round((item.rating === undefined ? 0:item.rating)) ? "star" : "star-outline"}
-                  size={14}
-                  color="#f5c518"
-                />
-              ))}
+              {item.rating &&
+                [...Array(5)].map((_, i) => (
+                  <Ionicons
+                    key={i}
+                    name={
+                      i <
+                      Math.round(item.rating === undefined ? 0 : item.rating)
+                        ? "star"
+                        : "star-outline"
+                    }
+                    size={14}
+                    color="#f5c518"
+                  />
+                ))}
             </View>
             <Text style={styles.productPrice}>₹{item.price}</Text>
           </Pressable>
@@ -133,5 +143,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   rating: { flexDirection: "row", marginTop: 10 },
-  ratingTxt: {  fontSize: 12, marginRight: 5 },
+  ratingTxt: { fontSize: 12, marginRight: 5 },
 });

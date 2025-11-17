@@ -93,6 +93,8 @@ export default function OrderDetail() {
         backgroundColor: "#f8ffe6ff",
         borderRadius: 12,
         padding: 10,
+        display:'flex',
+        flexDirection:'row'
       }}
     >
       <Image
@@ -103,17 +105,18 @@ export default function OrderDetail() {
             "https://via.placeholder.com/150",
         }}
         style={{
-          width: "100%",
-          height: 160,
+          width: 90,
+          height: 80,
           borderRadius: 10,
           resizeMode: "cover",
+          marginRight:15
         }}
       />
-      <Text
+      <View>
+        <Text
         style={{
           fontSize: 18,
           color: TEXT_COLOR_DARK,
-          marginTop: 10,
           fontWeight:700
         }}
       >
@@ -121,7 +124,7 @@ export default function OrderDetail() {
       </Text>
       <Text
         style={{
-          fontSize: 15,
+          fontSize: 14,
            fontWeight:500,
           color: TEXT_COLOR_MEDIUM,
           marginTop: 4,
@@ -131,13 +134,14 @@ export default function OrderDetail() {
       </Text>
       <Text
         style={{
-          fontSize: 15,
+          fontSize: 14,
            fontWeight:500,
           color: TEXT_COLOR_MEDIUM,
         }}
       >
         Price: ₹{product.price || "—"}
       </Text>
+      </View>
     </View>
   ))}
 </View>
