@@ -66,7 +66,7 @@ export default function Account() {
   const handleSignOut = async () => {
     try {
       await signOutUser();
-      router.replace("/(auth)/login");
+      router.replace("/(auth)/welcome");
       Alert.alert("Signed Out", "You have been signed out successfully.");
     } catch (err) {
       console.log("Error signing out:", err);
@@ -160,6 +160,7 @@ export default function Account() {
           </View>
         )}
       </ScrollView>
+      <Text style={styles.watermark}>Made By <Text style={{fontWeight:'bold'}}>Estrix Technologies</Text></Text>
     </View>
   );
 }
@@ -263,5 +264,6 @@ const styles = StyleSheet.create({
   },
   savedText: { color: "#155724", fontWeight: "600" },
   myaccTxt:{ display:'flex', flexDirection:'column'},
-  email:{ color:'#333', fontSize:15, marginTop:10 }
+  email:{ color:'#333', fontSize:15, marginTop:10 },
+  watermark:{color:'#333', fontSize:10, textAlign:'center', marginBottom:10}
 });
