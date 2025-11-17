@@ -18,7 +18,6 @@ import {
   ViewStyle,
 } from "react-native";
 import { Easing } from "react-native-reanimated";
-import { auth } from "../../firebase/config";
 import { useUserStore } from "@/store/useUserStore";
 const ButtonClickAnimation = ({
   pressed,

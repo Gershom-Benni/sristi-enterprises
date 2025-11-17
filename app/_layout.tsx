@@ -1,13 +1,16 @@
 // app/_layout.js
 import { Stack } from "expo-router";
-import { useAuth } from "../hooks/useAuth";
 import { View, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import { MotiView } from "moti";
-import React from "react";
+import React, { useEffect } from "react";
+import { useUserStore } from "@/store/useUserStore";
 export default function RootLayout() {
-  const { user, isLoading } = useAuth();
-  if (isLoading) {
+  const { user, loading ,initAuthListener  } = useUserStore();
+useEffect(() => {
+    initAuthListener();
+  }, []);
+  if (loading) {
     return (
       <View style={styles.loadingContainer}>
         <MotiView

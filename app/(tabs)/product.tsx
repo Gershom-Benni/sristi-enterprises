@@ -12,7 +12,7 @@ import {
   Alert,
   TextInput,
 } from "react-native";
-import { useRouter,useLocalSearchParams } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useProductStore, Review } from "../../store/useProductStore";
 
 import Animated, {
@@ -237,7 +237,9 @@ export default function ProductPage() {
                   />
                 ))}
                 <Text style={styles.rating}>
-                  {product.rating ? product.rating.toFixed(1) : "N/A"}
+                  {Number(product.rating)
+                    ? Number(product.rating).toFixed(1)
+                    : "N/A"}
                 </Text>
               </View>
 
@@ -255,7 +257,9 @@ export default function ProductPage() {
 
           <Pressable
             style={({ pressed }) => ButtonClickAnimation({ pressed })}
-            onPress={() => router.push(`/orderSummary?from=product-${product.id}`)}
+            onPress={() =>
+              router.push(`/orderSummary?from=product-${product.id}`)
+            }
           >
             <Text style={styles.loginBtnText}>Buy</Text>
           </Pressable>
@@ -272,7 +276,6 @@ export default function ProductPage() {
             {product.description || "No description available."}
           </Text>
 
-         
           {!hasReviewed && user && (
             <View style={styles.reviewInputBox}>
               <Text style={styles.AddReviewsTxt}>Add Your Review</Text>
@@ -304,7 +307,7 @@ export default function ProductPage() {
               </Pressable>
             </View>
           )}
-           <Text style={styles.heading}>Customer Reviews</Text>
+          <Text style={styles.heading}>Customer Reviews</Text>
 
           {loadingReviews ? (
             <Text>Loading reviews...</Text>
@@ -345,31 +348,31 @@ const styles = StyleSheet.create({
   namePrice: { width: "70%" },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   image: { width: "100%", height: 250, borderRadius: 10, marginBottom: 12 },
-  name: { fontSize: 18,  color: "#333" , fontWeight:700},
+  name: { fontSize: 18, color: "#333", fontWeight: 700 },
   rating: { fontSize: 14, color: "#333", marginLeft: 5 },
   wishlistTxt: {
     color: "green",
     textAlign: "center",
-    fontWeight:400,
+    fontWeight: 400,
     fontSize: 12,
   },
   price: {
     fontSize: 18,
     color: "green",
     marginTop: 9,
-    fontWeight:500,
+    fontWeight: 500,
   },
   heading: {
     fontSize: 20,
-    fontWeight:700,
+    fontWeight: 700,
     marginTop: 20,
     marginBottom: 8,
     color: "#333",
   },
   AddReviewsTxt: {
     fontSize: 20,
-    fontWeight:700,
-    marginTop:8,
+    fontWeight: 700,
+    marginTop: 8,
     marginBottom: 8,
     color: "#333",
   },
@@ -377,18 +380,18 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginRight: "auto",
   },
-  desc: { fontSize: 14.5, color: "#333",fontWeight:400, },
+  desc: { fontSize: 14.5, color: "#333", fontWeight: 400 },
   reviewCard: {
     backgroundColor: "#e4e3bb",
     padding: 10,
     borderRadius: 8,
     marginBottom: 8,
   },
-  user: { fontSize: 16, color: "#333",fontWeight:500, },
+  user: { fontSize: 16, color: "#333", fontWeight: 500 },
   comment: {
     marginTop: 4,
     color: "#333",
-    fontWeight:400,
+    fontWeight: 400,
     fontSize: 13,
   },
   star: { marginTop: 2.5, marginRight: 2.5 },
@@ -403,9 +406,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  noreviewTxt: { fontWeight:400, },
+  noreviewTxt: { fontWeight: 400 },
   loginBtnText: {
-    fontWeight:500,
+    fontWeight: 500,
     fontSize: 16,
     color: "#333",
   },
@@ -447,7 +450,7 @@ const styles = StyleSheet.create({
     padding: 10,
     minHeight: 80,
     fontSize: 14,
-    fontWeight:400,
+    fontWeight: 400,
     backgroundColor: "#f8ffe6",
     color: "#333",
   },

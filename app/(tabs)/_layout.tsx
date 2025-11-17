@@ -89,14 +89,6 @@ export default function TabsLayout() {
             </View>
           )}
         </View>
-
-        <Pressable onPress={() => router.push("/(tabs)/account")}>
-          <Ionicons
-            name="person-circle-outline"
-            size={28}
-            color={inactiveColor}
-          />
-        </Pressable>
       </View>
 
       <View style={styles.content}>

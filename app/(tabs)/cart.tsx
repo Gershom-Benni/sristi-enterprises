@@ -5,7 +5,6 @@ import {
   FlatList,
   Pressable,
   StyleSheet,
-  Alert,
 } from "react-native";
 import { useUserStore } from "../../store/useUserStore";
 import { useProductStore } from "../../store/useProductStore";

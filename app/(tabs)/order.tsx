@@ -56,7 +56,6 @@ export default function OrderDetail() {
     );
 
   const currentStageIndex = stages.findIndex((s) => s.key === order.status);
-  const product = order.items?.[0];
 
   return (
     <ScrollView

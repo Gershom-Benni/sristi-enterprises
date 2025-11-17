@@ -2,7 +2,6 @@ import {
   View,
   Text,
   TextInput,
-  FlatList,
   Pressable,
   StyleSheet,
   Alert,
@@ -70,15 +69,6 @@ export default function OrderSummary() {
       Alert.alert("Error", err.message);
     }
   };
-
-  const renderItem = ({ item, index }: any) => (
-    <View style={styles.row}>
-      <Text style={styles.cell}>{index + 1}</Text>
-      <Text style={[styles.cell, { flex: 2 }]}>{item.name}</Text>
-      <Text style={styles.cell}>{item.qty}</Text>
-      <Text style={styles.cell}>₹{item.price * item.qty}</Text>
-    </View>
-  );
 
   return (
     <KeyboardAvoidingView
@@ -156,7 +146,17 @@ export default function OrderSummary() {
       ))}
     </View>
 
-    <Pressable style={styles.buyBtn} onPress={handleBuy}>
+    {/* <Pressable style={styles.buyBtn} onPress={handleBuy}>
+      <Text style={styles.buyText}>Place Order</Text>
+    </Pressable> */}
+    <Pressable style={({ pressed }) => [
+            styles.buyBtn,
+            {
+              opacity: pressed ? 0.7 : 1,
+              transform: [{ scale: pressed ? 0.97 : 1 }],
+            },
+          ]}
+          onPress={handleBuy}>
       <Text style={styles.buyText}>Place Order</Text>
     </Pressable>
   </ScrollView>
