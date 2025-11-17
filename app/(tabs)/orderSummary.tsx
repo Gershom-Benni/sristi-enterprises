@@ -63,7 +63,7 @@ export default function OrderSummary() {
     }
     try {
       await updateContactInfo(address, phone);
-      await placeOrder(items, totalCost, paymentMethod);
+      await placeOrder(items, totalCost, paymentMethod, address, phone);
       router.push("/(tabs)/orderPlaced");
     } catch (err: any) {
       Alert.alert("Error", err.message);

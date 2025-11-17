@@ -61,39 +61,40 @@ export default function HomePage() {
       <Text style={styles.sectionTitle}>Our Products</Text>
 
       <View style={styles.gridContainer}>
-        {allProducts.map((item) => (
-          <Pressable
-            key={item.id}
-            style={styles.card}
-            onPress={() =>
-              router.push({ pathname: "/product", params: { id: item.id } })
-            }
-          >
-            <Image
-              source={{ uri: item.images[0] }}
-              style={styles.productImage}
-            />
-            <Text style={styles.productName}>{item.name}</Text>
-            <View style={styles.rating}>
-              <Text style={styles.ratingTxt}>{item.rating}</Text>
-              {item.rating &&
-                [...Array(5)].map((_, i) => (
-                  <Ionicons
-                    key={i}
-                    name={
-                      i <
-                      Math.round(item.rating === undefined ? 0 : item.rating)
-                        ? "star"
-                        : "star-outline"
-                    }
-                    size={14}
-                    color="#f5c518"
-                  />
-                ))}
-            </View>
-            <Text style={styles.productPrice}>₹{item.price}</Text>
-          </Pressable>
+        {allProducts.map((item) => {
+  const ratingValue = Number(item.rating) || 0;
+  const roundedRating = ratingValue.toFixed(1);
+
+  return (
+    <Pressable
+      key={item.id}
+      style={styles.card}
+      onPress={() =>
+        router.push({ pathname: "/product", params: { id: item.id } })
+      }
+    >
+      <Image source={{ uri: item.images[0] }} style={styles.productImage} />
+
+      <Text style={styles.productName}>{item.name}</Text>
+
+      <View style={styles.rating}>
+        <Text style={styles.ratingTxt}>{roundedRating}</Text>
+
+        {[...Array(5)].map((_, i) => (
+          <Ionicons
+            key={i}
+            name={i < Math.round(ratingValue) ? "star" : "star-outline"}
+            size={14}
+            color="#f5c518"
+          />
         ))}
+      </View>
+
+      <Text style={styles.productPrice}>₹{item.price}</Text>
+    </Pressable>
+  );
+})}
+
       </View>
     </ScrollView>
   );

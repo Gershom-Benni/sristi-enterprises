@@ -29,6 +29,8 @@ export type Order = {
   status: string;
   paymentMethod: string;
   createdAt?: any;
+  address: string;
+  phoneNumber: string;
 };
 
 type UserData = {
@@ -56,7 +58,7 @@ type UserStore = {
   removeFromCart: (productId: string) => Promise<void>;
   updateCartQty: (productId: string, qty: number) => Promise<void>;
   toggleWishlist: (productId: string) => Promise<void>;
-  placeOrder: (items: CartItem[], totalCost: number, paymentMethod: string) => Promise<void>;
+  placeOrder: (items: CartItem[], totalCost: number, paymentMethod: string,address:string, phoneNumber:string) => Promise<void>;
   updateContactInfo: (address?: string, phoneNumber?: string) => Promise<void>;
   updateUserName: (updatedName: string) => Promise<void>;
 };
@@ -200,18 +202,22 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 
-  placeOrder: async (items, totalCost, paymentMethod) => {
+  placeOrder: async (items, totalCost, paymentMethod,address, phoneNumber) => {
     const user = get().user;
-    if (!user) throw new Error("Not signed in");
-    const order = {
-      userId: user.id,
-      items,
-      totalCost,
-      status: "placed",
-      paymentMethod,
-      createdAt: serverTimestamp(),
-    };
-    const orderRef = await addDoc(collection(db, "orders"), order);
+     if (!user) throw new Error("Not signed in");
+
+  const orderData = {
+    userId: user.id,
+    items,
+    totalCost,
+    paymentMethod,
+    address,
+    phoneNumber,
+    createdAt: serverTimestamp(),
+    status: "Placed",
+  };
+
+  const orderRef = await addDoc(collection(db, "orders"), orderData);
     const userRef = doc(db, "users", user.id);
     await updateDoc(userRef, { orders: arrayUnion(orderRef.id), cart: [] });
     await get().loadUserDoc(user.id);

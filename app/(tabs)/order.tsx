@@ -55,7 +55,7 @@ export default function OrderDetail() {
       </View>
     );
 
-  const currentStageIndex = stages.findIndex((s) => s.key === order.status);
+  const currentStageIndex = stages.findIndex((s) => s.key.toLowerCase() === order.status.toLowerCase());
 
   return (
     <ScrollView
