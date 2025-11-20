@@ -14,33 +14,27 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE"
-        
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.sristiEnterprises"
     },
     "web": {
       "output": "static"
     },
     "plugins": [
       "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
-          "dark": {
-            "backgroundColor": "#000000"
-          }
-        }
-      ],
       "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6f60a987-ff63-448c-be48-6b5ff030ae44"
+      }
     }
   }
 }

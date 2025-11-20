@@ -201,7 +201,7 @@ export default function OrderDetail() {
                     height: 45, 
                     backgroundColor: i < currentStageIndex ? SUCCESS_COLOR : INACTIVE_COLOR,
                   }}
-                  transition={{ type: "timing", duration: 500, delay: i * 100 }}
+                  transition={{ type: "timing", duration: '500', delay: i * 100 }}
                   style={{
                     width: 3,
                     alignSelf: "center",
