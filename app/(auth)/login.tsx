@@ -107,6 +107,7 @@ export default function Login() {
               autoCapitalize="none"
               value={email}
               onChangeText={setEmail}
+              placeholderTextColor={"#333"}
             />
             <TextInput
               placeholder="Password"
@@ -114,6 +115,7 @@ export default function Login() {
               secureTextEntry
               value={password}
               onChangeText={setPassword}
+              placeholderTextColor={"#333"}
             />
 
             <Pressable onPress={handleLogin} style={ButtonClickAnimation}>

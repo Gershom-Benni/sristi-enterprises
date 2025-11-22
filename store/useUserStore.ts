@@ -68,14 +68,23 @@ export const useUserStore = create<UserStore>((set, get) => ({
   loading: true,
 
   initAuthListener: () => {
-    onAuthStateChanged(auth, async (u) => {
-      if (u) {
+  onAuthStateChanged(auth, async (u) => {
+    if (u) {
+      const snap = await getDoc(doc(db, "users", u.uid));
+
+      if (snap.exists()) {
         await get().loadUserDoc(u.uid);
       } else {
+        await signOut(auth);
+        
         set({ user: null, loading: false });
       }
-    });
-  },
+    } else {
+      set({ user: null, loading: false });
+    }
+  });
+},
+
 
   signUp: async (email, password,username) => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);

@@ -4,7 +4,7 @@
     "slug": "sristiEnterprises",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/appIcon.png",
+    "icon": "./assets/images/appIcon.jpg",
     "scheme": "sristienterprises",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

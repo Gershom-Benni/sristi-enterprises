@@ -131,6 +131,7 @@ export default function Signup() {
               autoCapitalize="none"
               value={username}
               onChangeText={setusername}
+              placeholderTextColor={"#333"}
             />
             <TextInput
               placeholder="Email"
@@ -139,6 +140,7 @@ export default function Signup() {
               autoCapitalize="none"
               value={email}
               onChangeText={setEmail}
+              placeholderTextColor={"#333"}
             />
             <TextInput
               placeholder="Password"
@@ -146,6 +148,7 @@ export default function Signup() {
               secureTextEntry
               value={password}
               onChangeText={setPassword}
+              placeholderTextColor={"#333"}
             />
             <TextInput
               placeholder="Retype Password"
@@ -153,6 +156,7 @@ export default function Signup() {
               secureTextEntry
               value={retype}
               onChangeText={setRetype}
+              placeholderTextColor={"#333"}
             />
 
             <Pressable style={ButtonClickAnimation} onPress={handleSignup}>
