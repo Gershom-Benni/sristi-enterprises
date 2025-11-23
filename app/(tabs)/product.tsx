@@ -22,7 +22,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { useUserStore } from "@/store/useUserStore";
-
+const { width: screenWidth } = Dimensions.get("window");
 const ButtonClickAnimation = ({
   pressed,
 }: {
@@ -414,14 +414,14 @@ const styles = StyleSheet.create({
   },
   starContainer: { flexDirection: "row" },
   carouselContainer: {
-    width: "100%",
+    width: screenWidth - 20,
     height: 250,
     borderRadius: 10,
     overflow: "hidden",
     marginBottom: 12,
   },
   carouselImage: {
-    width: Dimensions.get("window").width,
+    width: screenWidth - 20,
     height: 250,
     resizeMode: "stretch",
   },

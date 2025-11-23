@@ -4,6 +4,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  deleteUser as firebaseDeleteUser,
 } from "firebase/auth";
 import {
   addDoc,
@@ -16,6 +17,7 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { create } from "zustand";
 import { auth, db } from "../firebase/config";
@@ -50,7 +52,7 @@ type UserStore = {
   user: UserData | null;
   loading: boolean;
   initAuthListener: () => void;
-  signUp: ( email: string, password: string, username?: string) => Promise<void>;
+  signUp: (email: string, password: string, username?: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOutUser: () => Promise<void>;
   loadUserDoc: (uid: string) => Promise<void>;
@@ -58,9 +60,16 @@ type UserStore = {
   removeFromCart: (productId: string) => Promise<void>;
   updateCartQty: (productId: string, qty: number) => Promise<void>;
   toggleWishlist: (productId: string) => Promise<void>;
-  placeOrder: (items: CartItem[], totalCost: number, paymentMethod: string,address:string, phoneNumber:string) => Promise<void>;
+  placeOrder: (
+    items: CartItem[],
+    totalCost: number,
+    paymentMethod: string,
+    address: string,
+    phoneNumber: string
+  ) => Promise<void>;
   updateContactInfo: (address?: string, phoneNumber?: string) => Promise<void>;
   updateUserName: (updatedName: string) => Promise<void>;
+  deleteUser: () => Promise<void>;
 };
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -68,31 +77,30 @@ export const useUserStore = create<UserStore>((set, get) => ({
   loading: true,
 
   initAuthListener: () => {
-  onAuthStateChanged(auth, async (u) => {
-    if (u) {
-      const snap = await getDoc(doc(db, "users", u.uid));
+    onAuthStateChanged(auth, async (u) => {
+      if (u) {
+        const snap = await getDoc(doc(db, "users", u.uid));
 
-      if (snap.exists()) {
-        await get().loadUserDoc(u.uid);
+        if (snap.exists()) {
+          await get().loadUserDoc(u.uid);
+        } else {
+          await signOut(auth);
+
+          set({ user: null, loading: false });
+        }
       } else {
-        await signOut(auth);
-        
         set({ user: null, loading: false });
       }
-    } else {
-      set({ user: null, loading: false });
-    }
-  });
-},
+    });
+  },
 
-
-  signUp: async (email, password,username) => {
+  signUp: async (email, password, username) => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     const uid = cred.user.uid;
     const userDoc = {
       id: uid,
       email,
-      username:username,
+      username: username,
       createdAt: serverTimestamp(),
       profilePic: "",
       cart: [],
@@ -164,7 +172,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
     const uid = user.id;
     const docRef = doc(db, "users", uid);
     const snap = await getDoc(docRef);
-    const cart: CartItem[] = (snap.exists() ? (snap.data() as DocumentData).cart : []) || [];
+    const cart: CartItem[] =
+      (snap.exists() ? (snap.data() as DocumentData).cart : []) || [];
     const newCart = cart.filter((c) => c.productId !== productId);
     await updateDoc(docRef, { cart: newCart });
     await get().loadUserDoc(uid);
@@ -176,7 +185,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
     const uid = user.id;
     const docRef = doc(db, "users", uid);
     const snap = await getDoc(docRef);
-    const cart: CartItem[] = (snap.exists() ? (snap.data() as DocumentData).cart : []) || [];
+    const cart: CartItem[] =
+      (snap.exists() ? (snap.data() as DocumentData).cart : []) || [];
     const idx = cart.findIndex((c) => c.productId === productId);
     if (idx >= 0) {
       cart[idx].qty = qty;
@@ -211,22 +221,22 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 
-  placeOrder: async (items, totalCost, paymentMethod,address, phoneNumber) => {
+  placeOrder: async (items, totalCost, paymentMethod, address, phoneNumber) => {
     const user = get().user;
-     if (!user) throw new Error("Not signed in");
+    if (!user) throw new Error("Not signed in");
 
-  const orderData = {
-    userId: user.id,
-    items,
-    totalCost,
-    paymentMethod,
-    address,
-    phoneNumber,
-    createdAt: serverTimestamp(),
-    status: "Placed",
-  };
+    const orderData = {
+      userId: user.id,
+      items,
+      totalCost,
+      paymentMethod,
+      address,
+      phoneNumber,
+      createdAt: serverTimestamp(),
+      status: "Placed",
+    };
 
-  const orderRef = await addDoc(collection(db, "orders"), orderData);
+    const orderRef = await addDoc(collection(db, "orders"), orderData);
     const userRef = doc(db, "users", user.id);
     await updateDoc(userRef, { orders: arrayUnion(orderRef.id), cart: [] });
     await get().loadUserDoc(user.id);
@@ -256,5 +266,28 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
     await updateDoc(docRef, { username: updatedName });
     set({ user: { ...user, username: updatedName } });
+  },
+  deleteUser: async () => {
+    const user = get().user;
+    const firebaseUser = auth.currentUser;
+
+    if (!user || !firebaseUser) {
+      throw new Error("User not signed in.");
+    }
+
+    const uid = user.id;
+    const userDocRef = doc(db, "users", uid);
+
+    try {
+      await deleteDoc(userDocRef);
+      console.log(`Firestore document for user ${uid} deleted.`);
+
+      await firebaseDeleteUser(firebaseUser);
+      console.log(`Firebase auth user ${uid} deleted.`);
+
+      set({ user: null, loading: false });
+    } catch (error) {
+      throw error;
+    }
   },
 }));

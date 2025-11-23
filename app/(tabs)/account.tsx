@@ -15,7 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useUserStore } from "../../store/useUserStore";
 import { useRouter } from "expo-router";
 export default function Account() {
-  const { user, updateContactInfo, updateUserName, signOutUser, loadUserDoc } =
+  const { user, updateContactInfo, updateUserName, signOutUser, loadUserDoc, deleteUser } =
     useUserStore();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -32,7 +32,32 @@ export default function Account() {
       setIsSaved(true);
     }
   }, [user]);
-
+const handleDeleteAccount = () => {
+    Alert.alert(
+      "Confirm Deletion",
+      "Are you sure you want to permanently delete your account? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteUser();
+              router.replace("/(auth)/welcome");
+              Alert.alert("Account Deleted", "Your account has been successfully deleted.");
+            } catch (err) {
+              console.log("Error deleting account:", err);
+              Alert.alert("Deletion Failed", "There was an error deleting your account. Please try signing out and signing back in, then try again.");
+            }
+          },
+        },
+      ]
+    );
+  };
   const handleSave = async () => {
     if (!name.trim() && !phone.trim() && !address.trim()) {
       Alert.alert(
@@ -142,7 +167,10 @@ export default function Account() {
               </Pressable>
             </View>
           ) : null}
-
+<Pressable style={styles.deleteButton} onPress={handleDeleteAccount}>
+            <Ionicons name="trash-outline" size={18} color="#fff" />
+            <Text style={styles.signOutText}>Delete Account</Text>
+          </Pressable>
           <Pressable style={styles.signOutButton} onPress={handleSignOut}>
             <Ionicons name="log-out-outline" size={18} color="#fff" />
             <Text style={styles.signOutText}>Sign Out</Text>
@@ -173,6 +201,15 @@ const styles = StyleSheet.create({
       android: StatusBar.currentHeight || 24,
     }),
     backgroundColor: "#f8ffe6ff",
+  },
+  deleteButton: {
+    marginTop: 16,
+    backgroundColor: "#cc0000", 
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    borderRadius: 10,
   },
   header: {
     paddingHorizontal: 20,
@@ -240,7 +277,7 @@ const styles = StyleSheet.create({
   ghostText: { fontWeight: "700", color: "#444" },
   signOutButton: {
     marginTop: 16,
-    backgroundColor: "#ff4d4d",
+    backgroundColor: "#4CAF50",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

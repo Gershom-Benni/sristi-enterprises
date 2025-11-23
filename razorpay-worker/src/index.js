@@ -1,5 +1,3 @@
-import Razorpay from "razorpay";
-
 export default {
   async fetch(request, env) {
     if (request.method !== "POST") {
@@ -13,18 +11,26 @@ export default {
         return new Response("Amount is required", { status: 400 });
       }
 
-      // Initialize Razorpay
-      const razorpay = new Razorpay({
-        key_id: env.RZP_KEY_ID,
-        key_secret: env.RZP_KEY_SECRET,
-      });
+      const key = env.RZP_KEY_ID;
+      const secret = env.RZP_KEY_SECRET;
 
-      // Creating order
-      const order = await razorpay.orders.create({
+      const body = {
         amount: amount * 100,
         currency: "INR",
         receipt: "receipt_" + Date.now(),
+      };
+
+      const response = await fetch("https://api.razorpay.com/v1/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization":
+            "Basic " + btoa(`${key}:${secret}`),
+        },
+        body: JSON.stringify(body),
       });
+
+      const order = await response.json();
 
       return new Response(JSON.stringify(order), {
         headers: {
@@ -32,6 +38,7 @@ export default {
           "Access-Control-Allow-Origin": "*",
         },
       });
+
     } catch (err) {
       return new Response(JSON.stringify({ error: err.message }), {
         status: 500,
